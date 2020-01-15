@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="./styles.css">
+    </head>
+    <body>
+        <div id="header">
+            <div id="logo">
+                Developer
+            </div>
+            <div id="buttons">
+                <div id="logout">
+                    <button> logout </button>
+                </div>
+                <div class="clear"></div>
+                <div id="interfaceButtons">
+                    <div id="saveButton">
+                        <button id="save"> save </button>
+                    </div>
+                    <div id="manageFS">
+                        <div id="manageFSButtons">
+                            <button id="create"> create </button>
+                            <button id="edit"> edit </button>
+                            <button id="delete"> delete </button>
+                        </div>
+                        <form>
+                            <input id="manageFSForm">
+                                
+                            </input>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+
+        <div id="edNav">
+            <div id="editor">
+                <div id="editorPath">
+                    /main/sub/subsub/file.html
+                </div>
+                <!-- Do something about this event on the following line -->
+                <textarea onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+            </div>
+            <div id="navigator">
+                <div id="navigatorPath">
+                    /main/sub/subsub/subsubsub
+                </div>
+                <div id="navViewer">
+                    <div class="systemObject">
+                        <img src="GenericFolderIcon.png">
+                        <div class="systemObjectLabel"> subsub </div>
+                    </div>
+
+                    <div class="systemObject">
+                        <img src="GenericFolderIcon.png">
+                        <div class="systemObjectLabel"> subsubs </div>
+                    </div>
+
+                    <div class="systemObject">
+                        <img src="GenericFolderIcon.png">
+                        <div class="systemObjectLabel"> subsubsu </div>
+                    </div>
+
+                    <div class="systemObject">
+                        <img src="GenericFolderIcon.png">
+                        <div class="systemObjectLabel"> Big </div>
+                    </div>
+
+                    <div class="systemObject">
+                        <img src="GenericDocumentIcon.png">
+                        <div class="systemObjectLabel"> index.html </div>
+                    </div>
+
+                    <div class="systemObject">
+                        <img src="GenericDocumentIcon.png">
+                        <div class="systemObjectLabel"> styles.css </div>
+                    </div>
+
+                    <div class="systemObject">
+                        <img src="GenericDocumentIcon.png">
+                        <div class="systemObjectLabel"> script.js </div>
+                    </div>
+
+                    <div class="systemObject">
+                        <img src="GenericDocumentIcon.png">
+                        <div class="systemObjectLabel"> server.js </div>
+                    </div>
+
+                    <div class="systemObject">
+                        <img src="GenericDocumentIcon.png">
+                        <div class="systemObjectLabel"> data.txt </div>
+                    </div>
+
+                    <div class="systemObject">
+                        <img src="GenericDocumentIcon.png">
+                        <div class="systemObjectLabel"> someStuff.csv </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </body>
+</html>
