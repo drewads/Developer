@@ -79,6 +79,8 @@
 .systemObject {
     text-align: center;
     margin: 14px;
+    background-color: #b0d6f5; /* make this onclick as part of the select items in filesystem issue */
+    border-radius: 5px;
 }
 
 .systemObject img {
