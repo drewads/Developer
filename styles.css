@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
 }
 
 #header {
@@ -56,6 +56,7 @@ body {
     height: 490px;
     resize: none;
     border: 1px solid #000000;
+    font-family: 'Source Code Pro', monospace;
 }
 
 #navigator {
