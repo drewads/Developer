@@ -1,3 +1,11 @@
+:root {
+    --editor-width: 57%;
+    --navigator-width: calc(100% - var(--editor-width) - 1%);
+    --buttons-width-frac: .75;
+    --buttons-width: calc(var(--buttons-width-frac) * 100%);
+
+}
+
 body {
     font-family: 'Arial', sans-serif;
 }
@@ -8,11 +16,12 @@ body {
 
 #logo {
     float: left;
-    font-size: 3em;
+    width: calc(100% - var(--buttons-width));
+    font-size: 4vw;/*3em;*/
 }
 
 #buttons {
-    width: 50%;
+    width: var(--buttons-width);
     float: right;
 }
 
@@ -20,13 +29,15 @@ body {
     float: right;
 }
 
-#saveButton {
-    width: 20%;
+#editorButtons {
+    width: calc(100% - var(--navigator-width)/var(--buttons-width-frac));/*20%;*/
     float: left;
+    display: flex;
+    justify-content: space-evenly;
 }
 
 #manageFS {
-    width: 80%;
+    width: calc(var(--navigator-width) / var(--buttons-width-frac)); /*80%;*/
     float: right;
 }
 
@@ -43,7 +54,7 @@ body {
 }
 
 #editor {
-    width: 57%;
+    width: var(--editor-width);
     float: left;
 }
 
@@ -60,7 +71,7 @@ body {
 }
 
 #navigator {
-    width: 42%;
+    width: var(--navigator-width);
     float: right;
 }
 
