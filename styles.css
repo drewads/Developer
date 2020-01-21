@@ -3,11 +3,10 @@
     --navigator-width: calc(100% - var(--editor-width) - 1%);
     --buttons-width-frac: .75;
     --buttons-width: calc(var(--buttons-width-frac) * 100%);
-
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'system-ui', 'Arial', sans-serif;
 }
 
 #header {
@@ -17,12 +16,35 @@ body {
 #logo {
     float: left;
     width: calc(100% - var(--buttons-width));
-    font-size: 4vw;/*3em;*/
+    font-size: 4vw;
 }
 
 #buttons {
     width: var(--buttons-width);
     float: right;
+}
+
+#buttons button {
+    background-color: transparent;
+    border-color: gray;
+    border-radius: .5em;
+    margin-top: .4em;
+    margin-bottom: .4em;
+    padding-top: .25em;
+    padding-bottom: .25em;
+    font-size: 1vw;
+    font-family: 'system-ui', 'Arial', sans-serif;
+    outline: none;
+}
+
+#buttons button:hover {
+    background-color: gray;
+    color: white;
+}
+
+#buttons button:active {
+    border-color: black;
+    background-color: black;
 }
 
 #logout {
@@ -51,6 +73,13 @@ body {
     width: 100%;
     margin: auto;
     margin-top: 4px;
+    outline: none;
+    border: .1em solid lightgray;
+    font-family: 'system-ui', Arial, sans-serif;
+}
+
+#manageFSForm:focus {
+    border-color: gray;
 }
 
 #editor {
@@ -60,11 +89,12 @@ body {
 
 #editorPath {
     text-align: center;
+    font-size: 1vw;
 }
 
 #editor textarea {
     width: 100%;
-    height: 490px;
+    height: 460px;
     resize: none;
     border: 1px solid #000000;
     font-family: 'Source Code Pro', monospace;
@@ -77,11 +107,13 @@ body {
 
 #navigatorPath {
     text-align: center;
+    font-size: 1vw;
+    overflow: scroll;
 }
 
 #navWrapper {
     width: 100%;
-    height: 494px;
+    height: 464px;
     border: 1px solid #000000;
     overflow: scroll;
 }
@@ -99,11 +131,11 @@ body {
 }
 
 .systemObject img {
-    height: 60px;
+    height: 4.8vw;/*60px;*/
 }
 
 .systemObjectLabel {
-    font-size: 12px;
+    font-size: .8vw;/*12px;*/
     /*make parent element of fixed width and then do overflow-wrap: break-word;*/
 }
 
