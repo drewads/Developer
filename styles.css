@@ -98,6 +98,7 @@ body {
     resize: none;
     border: 1px solid #000000;
     font-family: 'Source Code Pro', monospace;
+    outline: none;
 }
 
 #navigator {
@@ -125,6 +126,7 @@ body {
 }
 
 .systemObject {
+    width: 6vw;
     text-align: center;
     margin: 14px;
     border-radius: 3px;
@@ -136,7 +138,7 @@ body {
 
 .systemObjectLabel {
     font-size: .8vw;/*12px;*/
-    /*make parent element of fixed width and then do overflow-wrap: break-word;*/
+    overflow-wrap: break-word;
 }
 
 .clear {
