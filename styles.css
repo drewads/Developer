@@ -19,32 +19,35 @@ body {
     font-size: 4vw;
 }
 
-#buttons {
-    width: var(--buttons-width);
-    float: right;
-}
-
-#buttons button {
+.UIButton {
     background-color: transparent;
     border-color: gray;
     border-radius: .5em;
-    margin-top: .4em;
-    margin-bottom: .4em;
-    padding-top: .25em;
-    padding-bottom: .25em;
     font-size: 1vw;
     font-family: 'system-ui', 'Arial', sans-serif;
     outline: none;
 }
 
-#buttons button:hover {
+.topButton {
+    margin-top: .4em;
+    margin-bottom: .4em;
+    padding-top: .25em;
+    padding-bottom: .25em;
+}
+
+.UIButton:hover {
     background-color: gray;
     color: white;
 }
 
-#buttons button:active {
+.UIButton:active {
     border-color: black;
     background-color: black;
+}
+
+#buttons {
+    width: var(--buttons-width);
+    float: right;
 }
 
 #logout {
@@ -68,18 +71,44 @@ body {
     justify-content: space-evenly;
 }
 
-#manageFSForm {
-    display: block;
-    width: 100%;
-    margin: auto;
+/*for move/rename function*/
+.moveRenameFormWrapper {
     margin-top: 4px;
+}
+
+.fromTo {
+    font-size: 1.1vw;
+    float: left;
+}
+
+.manageFSForm {
+    display: block;
     outline: none;
     border: .1em solid lightgray;
     font-family: 'system-ui', Arial, sans-serif;
 }
 
-#manageFSForm:focus {
+.manageFSForm:focus {
     border-color: gray;
+}
+
+.manageFSFormInterface {
+    width: 90%;
+    float: right;
+}
+
+#manageFSForm {
+    width: 99%;
+    float: left;
+}
+
+#moveToInput {
+    width: 81%;
+    float: left;
+}
+
+#move {
+    float: right;
 }
 
 #editor {

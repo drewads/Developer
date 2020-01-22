@@ -11,26 +11,41 @@
             </div>
             <div id="buttons">
                 <div id="logout">
-                    <button> logout </button>
+                    <button  class="UIButton topButton"> logout </button>
                 </div>
                 <div class="clear"></div>
                 <div id="interfaceButtons">
                     <div id="editorButtons">
-                        <button id="save"> save </button>
-                        <button id="discard"> discard </button>
+                        <button id="save" class="UIButton topButton"> save </button>
+                        <button id="discard" class="UIButton topButton"> discard </button>
                     </div>
                     <div id="manageFS">
                         <div id="manageFSButtons">
-                            <button id="create"> create </button>
-                            <button id="edit"> edit </button>
-                            <button id="upload"> upload </button>
-                            <button id="move_rename"> move/rename </button>
-                            <button id="delete"> delete </button>
+                            <button id="create" class="UIButton topButton"> create </button>
+                            <button id="edit" class="UIButton topButton"> edit </button>
+                            <button id="upload" class="UIButton topButton"> upload </button>
+                            <button id="move_rename" class="UIButton topButton"> move/rename </button>
+                            <button id="delete" class="UIButton topButton"> delete </button>
                         </div>
                         <form>
-                            <input id="manageFSForm" autocomplete="off">
-                                
-                            </input>
+                            <div id="moveRenameFormFromWrapper" class="moveRenameFormWrapper">
+                                <div id="moveFrom" class="fromTo"> From: </div>
+                                <div class="manageFSFormInterface">
+                                    <input id="manageFSForm" class="manageFSForm" autocomplete="off">
+                                        
+                                    </input>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                            <div id="moveRenameFormToWrapper" class="moveRenameFormWrapper">
+                                <div id="moveTo" class="fromTo"> To: </div>
+                                <div class="manageFSFormInterface">
+                                    <input id="moveToInput" class="manageFSForm" autocomplete="off">
+
+                                    </input>
+                                    <button id="move" class="UIButton"> move </button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
