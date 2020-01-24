@@ -11,8 +11,9 @@ const server = http.createServer((request, response) => {
             body.push(chunk);
         });
         request.on('end', () => {
-            body = Buffer.concat(body).toString();
-            console.log(body);
+            body = JSON.parse(Buffer.concat(body).toString());
+            console.log(body.Directory);
+            console.log(body.Filename);
             response.writeHead(200, {'Content-Type': 'text/plain'});
             response.write('Data received.');
             response.end();
