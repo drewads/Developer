@@ -4,13 +4,9 @@
   "description": "Web development environment allowing full access to files on the server from a browser.",
   "main": "backendStart.js",
   "dependencies": {
-    "jest": "^25.1.0",
     "mime": "^2.4.4"
   },
-  "devDependencies": {
-    "@babel/cli": "^7.8.3",
-    "@babel/core": "^7.8.3"
-  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
