@@ -18,7 +18,7 @@ const server = http.createServer((request, response) => {
     const query = url.parse(request.url, true);
 
     // when we receive dev requests with url pathname = /client-dev-interface pass to client-dev-interface
-    if (devURLRegex.test(query.pathname)) {
+    if (devURLRegex.test(query.pathname)) { //maybe use node url fileurltopath instead?
         cdi.handle(request, response, systemRoot);
     }
 });
