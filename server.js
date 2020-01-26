@@ -38,16 +38,19 @@ const server = http.createServer((request, response) => {
         
         fs.readFile(file, (err, data) => {
             if (err) {
+                // make error page
                 response.writeHead(404, {'Content-Type': 'text/html'});
                 if (request.method != 'HEAD') response.write('Error 404: File Not Found');
                 response.end();
             } else {
+                // figure out if i need to add any headers to these responses
                 response.writeHead(200, {'Content-Type': mime.getType(path.extname(file))});
                 if (request.method != 'HEAD') response.write(data);
                 response.end();
             }
         });
     } else {
+        // make error page
         response.writeHead(405, {'Content-Type': 'text/html', 'Allow': 'GET, HEAD'});
         response.write('Error 405: Method Not Allowed');
         response.end();
