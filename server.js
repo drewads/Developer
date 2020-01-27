@@ -17,7 +17,7 @@ const devRoot = '/Users/drewwadsworth/Documents/Developer/dev_root';
 const siteRoot = '/Users/drewwadsworth/Documents/Developer/site_root';
 const systemRoot = '/Users/drewwadsworth/Documents/Developer';
 const devURLRegex = /^\/client-dev-interface/;
-const devSubDomRegex = /^dev./;
+const devSubDomRegex = /^dev\./;
 
 const server = http.createServer((request, response) => {
     const query = url.parse(request.url, true);
