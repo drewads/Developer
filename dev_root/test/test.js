@@ -14,4 +14,4 @@ let createTest = (dir, filename, type) => {
     }
 }
 
-//createTest('/dev_root/test', 'hello', 'File');
+createTest('/dev_root/test', 'hello', 'File');

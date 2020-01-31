@@ -1,6 +1,4 @@
 const request = new XMLHttpRequest();
-const fileLabel = "File: ";
-const dirLabel = "Directory: ";
 
 function formSubmit() {
     request.addEventListener("load", reqListener);
