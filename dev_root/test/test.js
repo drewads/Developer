@@ -27,6 +27,7 @@ let createTest = (dir, filename, isDir, testName, callback) => {
     4: work
     5: fail
 */
+// use promises here instead
 createTest('/dev_root/test/hihi/', 'washang', true, 'Create Test 0', () => {
     createTest('/dev_root/test/hihi/sup', 'hello', true, 'Create Test 1', () => {
         createTest('/dev_root/test/hihi/sup/', '', false, 'Create Test 2', () => {
