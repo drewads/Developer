@@ -35,20 +35,38 @@ const server = http.createServer((request, response) => {
         fs.readFile(file, (err, data) => {
             if (err) {
                 const dirPathRegex = /\/$/;     // file path ends in /
-                file += dirPathRegex.test(file) ? 'index.html' : '/index.html';
-                fs.readFile(file, (err2, data2) => {
-                    if (err2) {
-                        // make error page
-                        response.writeHead(404, {'Content-Type': 'text/html'});
-                        if (request.method != 'HEAD') response.write('Error 404: File Not Found');
-                        response.end();
-                    } else {
-                        // figure out if i need to add any headers to these responses
-                        response.writeHead(200, {'Content-Type': mime.getType(path.extname(file))});
-                        if (request.method != 'HEAD') response.write(data2);
-                        response.end();
-                    }
-                });
+
+                // check if potential directory ends in /
+                if (!dirPathRegex.test(file)) {
+                    file += '/';
+                    fs.access(file, fs.constants.F_OK, (err_nonExist) => {
+                        if (err_nonExist) {
+                            // make error page
+                            response.writeHead(404, {'Content-Type': 'text/html'});
+                            if (request.method != 'HEAD') response.write('Error 404: File Not Found');
+                            response.end();
+                        } else {
+                            response.writeHead(307, {'Location': file.slice(root.length)});
+                            response.end();
+                        }
+                    });
+                } else {
+                    file += 'index.html';
+
+                    fs.readFile(file, (err2, data2) => {
+                        if (err2) {
+                            // make error page
+                            response.writeHead(404, {'Content-Type': 'text/html'});
+                            if (request.method != 'HEAD') response.write('Error 404: File Not Found');
+                            response.end();
+                        } else {
+                            // figure out if i need to add any headers to these responses
+                            response.writeHead(200, {'Content-Type': mime.getType(path.extname(file))});
+                            if (request.method != 'HEAD') response.write(data2);
+                            response.end();
+                        }
+                    });
+                }
             } else {
                 // figure out if i need to add any headers to these responses
                 response.writeHead(200, {'Content-Type': mime.getType(path.extname(file))});

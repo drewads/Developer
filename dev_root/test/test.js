@@ -1,6 +1,4 @@
 // Create
-createTest('/dev_root/test', 'hello', 'File');
-
 let createTest = (dir, filename, type) => {
     const request = new XMLHttpRequest();
     request.addEventListener("load", reqListener);
@@ -15,3 +13,5 @@ let createTest = (dir, filename, type) => {
         alert(this.responseText);
     }
 }
+
+//createTest('/dev_root/test', 'hello', 'File');
