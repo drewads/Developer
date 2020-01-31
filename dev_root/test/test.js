@@ -1,17 +1,18 @@
 // Create
-let createTest = (dir, filename, type) => {
+let createTest = (dir, filename, isDir) => {
     const request = new XMLHttpRequest();
     request.addEventListener("load", reqListener);
     request.open('PUT', 'http://dev.localhost:8080/client-dev-interface/create');
     request.setRequestHeader('Content-Type', 'application/json');
-    let body = {'Directory' : dir,
+    const body = {'Directory' : dir,
                 'Filename' : filename,
-                'Type': type};
+                'isDirectory': isDir};
     request.send(JSON.stringify(body));
 
+    // shouldn't be arrow function
     function reqListener() {
         alert(this.responseText);
     }
 }
 
-createTest('/dev_root/test', 'hello', 'File');
+createTest('/dev_root/test/hihi', 'hello', true);
