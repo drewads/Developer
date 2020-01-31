@@ -28,7 +28,7 @@ const server = http.createServer((request, response) => {
     // when we receive dev requests with url pathname = /client-dev-interface pass to client-dev-interface
     if (root === devRoot && devURLRegex.test(query.pathname)) { //maybe use node url fileurltopath instead?
         cdi.handle(request, response, systemRoot);
-    } else if (request.method === 'GET' || request.method === 'HEAD') {
+    } else if (request.method.toUpperCase() === 'GET' || request.method.toUpperCase() === 'HEAD') {
         // normal fileserver here
         let file = root + query.pathname;
 
