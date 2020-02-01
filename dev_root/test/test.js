@@ -1,7 +1,7 @@
 // Create
-let createTest = (dir, filename, isDir, testName, callback) => {
+const createTest = (dir, filename, isDir, testName, callback) => {
     const request = new XMLHttpRequest();
-    request.addEventListener("load", reqListener);
+    request.addEventListener("load", reqListenerCreate);
     request.open('PUT', 'http://dev.localhost:8080/client-dev-interface/create');
     request.setRequestHeader('Content-Type', 'application/json');
     const body = {'Directory' : dir,
@@ -10,7 +10,7 @@ let createTest = (dir, filename, isDir, testName, callback) => {
     request.send(JSON.stringify(body));
 
     // shouldn't be arrow function
-    function reqListener() {
+    function reqListenerCreate() {
         const curElem = document.createElement("div");
         curElem.innerText = testName + ': ' + this.responseText;
         document.body.appendChild(curElem);
@@ -39,3 +39,22 @@ createTest('/dev_root/test/hihi/', 'washang', true, 'Create Test 0', () => {
         });
     });
 });
+
+
+// Delete
+// add promises to this to do the same thing as the callbacks above
+const deleteTest = (filepath, isDir, testName) => {
+    const request = new XMLHttpRequest();
+    request.addEventListener('load', reqListenerDelete);
+    request.open('DELETE', 'http://dev.localhost:8080/client-dev-interface/delete');
+    request.setRequestHeader('Content-Type', 'application/json');
+    const body = {'Filepath': filepath,
+                'isDirectory': isDir};
+    request.send(JSON.stringify(body));
+
+    function reqListenerDelete() {
+        const curElem = document.createElement("div");
+        curElem.innerText = testName + ': ' + this.responseText;
+        document.body.appendChild(curElem);
+    }
+}
