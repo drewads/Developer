@@ -11,7 +11,7 @@ const fs = require('fs');
 const path = require('path');
 const mime = require('mime');
 
-const cdi = require('./client-dev-interface/client-dev-interface');
+const cdi = require('./client-dev-interface/client-dev-interface.js');
 
 const devRoot = '/Users/drewwadsworth/Documents/Developer/dev_root';
 const siteRoot = '/Users/drewwadsworth/Documents/Developer/site_root';
@@ -27,7 +27,17 @@ const server = http.createServer((request, response) => {
 
     // when we receive dev requests with url pathname = /client-dev-interface pass to client-dev-interface
     if (root === devRoot && devURLRegex.test(query.pathname)) { //maybe use node url fileurltopath instead?
-        cdi.handle(request, response, systemRoot);
+        cdi.handle(request, systemRoot)
+        .then((success) => {
+            response.writeHead(success.statusCode, success.responseHeaders);
+            response.write(success.message);
+            response.end();
+        })
+        .catch((error) => {
+            response.writeHead(error.statusCode, error.responseHeaders);
+            response.write(error.message);
+            response.end();
+        })
     } else if (request.method.toUpperCase() === 'GET' || request.method.toUpperCase() === 'HEAD') {
         // normal fileserver here
         let file = root + query.pathname;
