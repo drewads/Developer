@@ -3,6 +3,7 @@ const DONE_STATE = 4;
 
 const compareAndPrintResults = (testName, responseText, expectedResponse) => {
     const curElem = document.createElement("div");
+    console.log(responseText);
     curElem.innerText = 'Test '
     + (responseText === expectedResponse ? 'Success' : 'Failure')
     + '. ' + testName + ': ' + responseText;
@@ -11,10 +12,8 @@ const compareAndPrintResults = (testName, responseText, expectedResponse) => {
 
 // All requests need to be made in sequence because they are handled asynchronously on the server
 
-// const genericTest = ()
-
-// Create
-const createTest = (dir, filename, isDir, testName, expectedResult) => {
+// if body is JSON, it must already be stringified
+const genericTest = (method, devModule, headers, body, testName, expectedResult) => {
     return new Promise(resolve => {
         const request = new XMLHttpRequest();
         request.onreadystatechange = () => {
@@ -23,13 +22,20 @@ const createTest = (dir, filename, isDir, testName, expectedResult) => {
                 resolve();
             }
         }
-        request.open('PUT', 'http://dev.localhost:8080/client-dev-interface/create');
-        request.setRequestHeader('Content-Type', 'application/json');
-        const body = {'Directory' : dir,
-                    'Filename' : filename,
-                    'isDirectory': isDir};
-        request.send(JSON.stringify(body));
+        request.open(method, 'http://dev.localhost:8080/client-dev-interface/' + devModule);
+        
+        for (const header in headers) {
+            request.setRequestHeader(header, headers[header]);
+        }
+        request.send(body);
     });
+}
+
+// Create
+const createTest = (dir, filename, isDir, testName, expectedResult) => {
+    const headers = {'Content-Type': 'application/json'};
+    const body = JSON.stringify({'Directory' : dir, 'Filename' : filename, 'isDirectory': isDir});
+    return genericTest('PUT', 'create', headers, body, testName, expectedResult);
 }
 
 /*
@@ -55,21 +61,10 @@ createTest('/dev_root/test/hihi/', 'washang', true, 'Create Test 0')
 
 
 // Delete
-const deleteTest = (filepath, isDir, testName, expectedResult) => {
-    return new Promise(resolve => {
-        const request = new XMLHttpRequest();
-        request.onreadystatechange = () => {
-            if (request.readyState === DONE_STATE) {
-                compareAndPrintResults(testName, request.response, expectedResult);
-                resolve();
-            }
-        }
-        request.open('DELETE', 'http://dev.localhost:8080/client-dev-interface/delete');
-        request.setRequestHeader('Content-Type', 'application/json');
-        const body = {'Filepath': filepath,
-                    'isDirectory': isDir};
-        request.send(JSON.stringify(body));
-    });
+const deleteTest = async (filepath, isDir, testName, expectedResult) => {
+    const headers = {'Content-Type': 'application/json'};
+    const body = JSON.stringify({'Filepath': filepath, 'isDirectory': isDir});
+    return await genericTest('DELETE', 'delete', headers, body, testName, expectedResult);
 }
 
 deleteTest('/dev_root/test/hihi', true, 'Delete Test 0',
@@ -86,40 +81,18 @@ deleteTest('/dev_root/test/hihi', true, 'Delete Test 0',
                         'Delete failed: system object does not exist.'))
 .then(() => deleteTest('/dev_root/test/hihi/hello/', false, 'Delete Test 6',
                         'Delete failed: system object does not exist.'))
-/*.then(() => {
-    return new Promise(resolve => {
-        const request = new XMLHttpRequest();
-        request.onreadystatechange = () => {
-            if (request.readyState === DONE_STATE) {
-                compareAndPrintResults('Delete Test 7', request.response,
-                'Delete failed: method not allowed.');
-                resolve();
-            }
-        }
-
-        request.open('POST', 'http://dev.localhost:8080/client-dev-interface/delete');
-        request.setRequestHeader('Content-Type', 'application/json');
-        const body = {'Filepath': filepath,
-                    'isDirectory': isDir};
-        request.send(JSON.stringify(body));
-    })
-})
-.then(() => {
-    return new Promise(resolve => {
-        const request = new XMLHttpRequest();
-        request.onreadystatechange = () => {
-            if (request.readyState === DONE_STATE) {
-                compareAndPrintResults('Delete Test 7', request.response,
-                'Delete failed: request body has incorrect format.');
-                resolve();
-            }
-        }
-
-        request.open('DELETE', 'http://dev.localhost:8080/client-dev-interface/delete');
-        request.setRequestHeader('Content-Type', 'application/json');
-        const body = {'Filepath': filepath,
-                    'someOtherAttribute': isDir};
-        request.send(JSON.stringify(body));
-    })
-})*/
+.then(() => genericTest('POST', 'delete', {'Content-Type': 'application/json'},
+                        JSON.stringify({'Filepath': '/dev_root/test/hihi/hello/',
+                                        'isDirectory': true}), 'Delete Test 7',
+                        'Delete failed: method not allowed.'))
+.then(() => genericTest('DELETE', 'delete', {'Content-Type': 'application/json'},
+                        JSON.stringify({'Filepath': '/dev_root/test/hihi/toDelete.txt',
+                                        'someOtherAttribute': -1}), 'Delete Test 8',
+                        'Delete failed: request body has incorrect content type/format.'))
+.then(() => genericTest('DELETE', 'delete', {'Content-Type': 'text/plain'},
+                        'here is my request body', 'Delete Test 9',
+                        'Delete failed: request body could not be parsed as JSON.'))
+.then(() => genericTest('DELETE', 'delete', {'Content-Type': 'application/json'},
+                        'here is my request body', 'Delete Test 10',
+                        'Delete failed: request body could not be parsed as JSON.'))
 .catch(error => alert('Something went wrong with Delete tests.'));
