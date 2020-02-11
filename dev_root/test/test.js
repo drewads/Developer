@@ -1,29 +1,69 @@
-'use strict';
-const DONE_STATE = 4;
+/**
+* This is a test file for client-dev-interface that conducts tests
+* from the client by sending HTTP requests. Responses are compared
+* to the expected outcome and deemed correct or incorrect.
+*
+* All HTTP requests must be made in sequence with Promise chains
+* because they are handled asynchronously on the server.
+*/
 
+'use strict';
+const DONE_STATE = 4; // when the HTTP request is completely finished, including response
+
+/**
+ * compareAndPrintResults compares the HTTP response body to the expected response
+ * body, evaluating whether the test was successful, and creates a new HTML element
+ * in the DOM containing success/failure info, test name, and HTTP response received.
+ * 
+ * @param {string} testName the name of this test
+ * @param {string} responseText the HTTP response body
+ * @param {string} expectedResponse the expected HTTP response body
+ */
 const compareAndPrintResults = (testName, responseText, expectedResponse) => {
     const curElem = document.createElement("div");
-    console.log(responseText);
+
+    // formatted information about the test that is displayed
     curElem.innerText = 'Test '
     + (responseText === expectedResponse ? 'Success' : 'Failure')
     + '. ' + testName + ': ' + responseText;
+
     document.body.appendChild(curElem);
 }
 
-// All requests need to be made in sequence because they are handled asynchronously on the server
-
-// if body is JSON, it must already be stringified
+/*
+* This is a generic function that carries out a full single test. This has a lot
+* of parameters, so wrapper functions are created below for each dev module.
+* However, this gives us some flexibility to create some extra tests for a dev
+* module that don't fit the typical mold. This function returns a Promise.
+*
+* Note to caller: if parameter body is JSON, it must already be stringified.
+* parameter headers is a JavaScript object with request headers as key-value pairs.
+*/
+/**
+ * 
+ * @param {string} method 
+ * @param {string} devModule 
+ * @param {JavaScript Object} headers 
+ * @param {JavaScript Object} body 
+ * @param {*} testName 
+ * @param {*} expectedResult 
+ */
 const genericTest = (method, devModule, headers, body, testName, expectedResult) => {
     return new Promise(resolve => {
         const request = new XMLHttpRequest();
+
+        // when we get the entire HTTP response back from the server
         request.onreadystatechange = () => {
             if (request.readyState === DONE_STATE) {
                 compareAndPrintResults(testName, request.response, expectedResult);
                 resolve();
             }
         }
+
+        // devModule has no file extension
         request.open(method, 'http://dev.localhost:8080/client-dev-interface/' + devModule);
         
+        // handles a JavaScript object containing request header key-value pairs
         for (const header in headers) {
             request.setRequestHeader(header, headers[header]);
         }
@@ -31,9 +71,23 @@ const genericTest = (method, devModule, headers, body, testName, expectedResult)
     });
 }
 
-// Create
+
+/******************** Tests for Create Module ********************/
+
+/**
+ * createTest uses genericTest to make one test for the create dev module.
+ * 
+ * @param {string} dir filepath of the directory in which to create a file
+ * @param {string} filename name of the object to create
+ * @param {boolean} isDir true if object is a directory, false otherwise
+ * @param {string} testName the name of this specific test
+ * @param {string} expectedResult the expected HTTP response body text
+ * @return {Promise} resolved when test completes
+ */
 const createTest = (dir, filename, isDir, testName, expectedResult) => {
     const headers = {'Content-Type': 'application/json'};
+
+    // body is of correct format
     const body = JSON.stringify({'Directory' : dir, 'Filename' : filename, 'isDirectory': isDir});
     return genericTest('PUT', 'create', headers, body, testName, expectedResult);
 }
@@ -60,13 +114,24 @@ createTest('/dev_root/test/hihi/', 'washang', true, 'Create Test 0')
 
 
 
-// Delete
+/******************** Tests for Delete Module ********************/
+
+/**
+ * deleteTest uses genericTest to make one test for the delete dev module.
+ * 
+ * @param {string} filepath path of the object to delete
+ * @param {boolean} isDir true if object to delete is a directory, false otherwise
+ * @param {string} testName name of this test
+ * @param {string} expectedResult the expected HTTP response body text
+ * @return {Promise} resolved when test completes
+ */
 const deleteTest = async (filepath, isDir, testName, expectedResult) => {
     const headers = {'Content-Type': 'application/json'};
     const body = JSON.stringify({'Filepath': filepath, 'isDirectory': isDir});
     return await genericTest('DELETE', 'delete', headers, body, testName, expectedResult);
 }
 
+// tests
 deleteTest('/dev_root/test/hihi', true, 'Delete Test 0',
             'Delete failed: directory could not be removed.')
 .then(() => deleteTest('/dev_root/test/hihi/toDelete.txt', true, 'Delete Test 1',
