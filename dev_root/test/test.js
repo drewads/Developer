@@ -8,6 +8,7 @@
 */
 
 'use strict';
+
 const DONE_STATE = 4; // when the HTTP request is completely finished, including response
 
 /**
@@ -71,9 +72,6 @@ const genericTest = (method, devModule, headers, body, testName, expectedResult)
     });
 }
 
-
-/******************** Tests for Create Module ********************/
-
 /**
  * createTest uses genericTest to make one test for the create dev module.
  * 
@@ -84,37 +82,13 @@ const genericTest = (method, devModule, headers, body, testName, expectedResult)
  * @param {string} expectedResult the expected HTTP response body text
  * @return {Promise} resolved when test completes
  */
-const createTest = (dir, filename, isDir, testName, expectedResult) => {
+const createTest = (filepath, isDir, testName, expectedResult) => {
     const headers = {'Content-Type': 'application/json'};
 
     // body is of correct format
-    const body = JSON.stringify({'Directory' : dir, 'Filename' : filename, 'isDirectory': isDir});
+    const body = JSON.stringify({'Filepath' : filepath, 'isDirectory': isDir});
     return genericTest('PUT', 'create', headers, body, testName, expectedResult);
 }
-
-/*
-    Create
-    0: work
-    1: work
-    2: fail
-    3: fail
-    4: work
-    5: fail
-*/
-/*
-createTest('/dev_root/test/hihi/', 'washang', true, 'Create Test 0')
-.then(() => createTest('/dev_root/test/hihi/sup', 'hello', true, 'Create Test 1'))
-.then(() => createTest('/dev_root/test/hihi/sup/', '', false, 'Create Test 2'))
-.then(() => createTest('/dev_root/test/hihi/sup/', '', true, 'Create Test 3'))
-.then(() => createTest('/dev_root/test/hihi/sup/', 'hi', false, 'Create Test 4'))
-.then(() => createTest('/dev_root/test/hihi/sup', 'hi', false, 'Create Test 5'))
-.catch(error => alert('Something went wrong with Create tests.'))
-.then(() => document.body.appendChild(document.createElement('br')));
-*/
-
-
-
-/******************** Tests for Delete Module ********************/
 
 /**
  * deleteTest uses genericTest to make one test for the delete dev module.
@@ -126,14 +100,27 @@ createTest('/dev_root/test/hihi/', 'washang', true, 'Create Test 0')
  * @return {Promise} resolved when test completes
  */
 const deleteTest = async (filepath, isDir, testName, expectedResult) => {
+    // HTTP request headers
     const headers = {'Content-Type': 'application/json'};
+    // HTTP request body
     const body = JSON.stringify({'Filepath': filepath, 'isDirectory': isDir});
     return await genericTest('DELETE', 'delete', headers, body, testName, expectedResult);
 }
 
-// tests
-deleteTest('/dev_root/test/hihi', true, 'Delete Test 0',
-            'Delete failed: directory could not be removed.')
+/**************************************** Tests ****************************************/
+
+/******************** Testing for Create Module ********************/
+createTest('/dev_root/test/hihi', true, 'Create Test 0', 'Directory successfully created.')
+.then(() => createTest('/dev_root/test/hihi/hello/', true, 'Create Test 0',
+                        'Directory successfully created.'))
+.then(() => createTest('/dev_root/test/hihi/toDelete.txt', false, 'Create Test 1',
+                        'File successfully created.'))
+.catch(error => alert('Something went wrong with Create tests.'))
+.then(() => document.body.appendChild(document.createElement('br')))
+
+/******************** Testing for Delete Module ********************/
+.then(() => deleteTest('/dev_root/test/hihi', true, 'Delete Test 0',
+                'Delete failed: directory could not be removed.'))
 .then(() => deleteTest('/dev_root/test/hihi/toDelete.txt', true, 'Delete Test 1',
                         'Delete failed: directory could not be removed.'))
 .then(() => deleteTest('/dev_root/test/hihi/hello/', false, 'Delete Test 2',
@@ -160,4 +147,6 @@ deleteTest('/dev_root/test/hihi', true, 'Delete Test 0',
 .then(() => genericTest('DELETE', 'delete', {'Content-Type': 'application/json'},
                         'here is my request body', 'Delete Test 10',
                         'Delete failed: request body could not be parsed as JSON.'))
+.then(() => deleteTest('/dev_root/test/hihi', true, 'Delete Test 11',
+                        'Directory successfully deleted.'))
 .catch(error => alert('Something went wrong with Delete tests.'));
