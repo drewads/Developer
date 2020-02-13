@@ -110,17 +110,39 @@ const deleteTest = async (filepath, isDir, testName, expectedResult) => {
 /**************************************** Tests ****************************************/
 
 /******************** Testing for Create Module ********************/
-createTest('/dev_root/test/hihi', true, 'Create Test 0', 'Directory successfully created.')
+createTest('/dev_root/test/hihi', true, 'Create Test -1', 'Directory successfully created.')
 .then(() => createTest('/dev_root/test/hihi/hello/', true, 'Create Test 0',
                         'Directory successfully created.'))
 .then(() => createTest('/dev_root/test/hihi/toDelete.txt', false, 'Create Test 1',
+                        'File successfully created.'))
+.then(() => createTest('/dev_root/test/hihi/hello', true, 'Create Test 2',
+                        'Directory already exists in filesystem.'))
+.then(() => createTest('/dev_root/test/hihi/toDelete.txt', false, 'Create Test 3',
+                        'File already exists in filesystem.'))
+.then(() => genericTest('GET', 'create', {'Content-Type': 'application/json'},
+                        JSON.stringify({'Filepath' : '/dev_root/test/hihi/toDelete.txt',
+                                        'isDirectory' : false}),
+                        'Create Test 4', 'Create failed: method not allowed.'))
+.then(() => genericTest('PUT', 'create', {'Content-Type': 'application/json'},
+                        {'isDirectory' : false}, 'Create Test 5',
+                        'Create failed: request body could not be parsed as JSON.'))
+.then(() => genericTest('PUT', 'create', {'Content-Type': 'application/json'},
+                        JSON.stringify({'isDirectory' : false}), 'Create Test 6',
+                        'Create failed: request body has incorrect content type/format.'))
+.then(() => createTest('/dev_root/test/hihi/more', true, 'Create Test 7',
+                        'Directory successfully created.'))
+.then(() => createTest('/dev_root/test/hihi/hello/index.html', false, 'Create Test 8',
                         'File successfully created.'))
 .catch(error => alert('Something went wrong with Create tests.'))
 .then(() => document.body.appendChild(document.createElement('br')))
 
 /******************** Testing for Delete Module ********************/
+.then(() => deleteTest('/dev_root/test/hihi/hello/index.html', false, 'Delete Test -2',
+                        'File successfully deleted.'))
+.then(() => deleteTest('/dev_root/test/hihi/more', true, 'Delete Test -1',
+                        'Directory successfully deleted.'))
 .then(() => deleteTest('/dev_root/test/hihi', true, 'Delete Test 0',
-                'Delete failed: directory could not be removed.'))
+                        'Delete failed: directory could not be removed.'))
 .then(() => deleteTest('/dev_root/test/hihi/toDelete.txt', true, 'Delete Test 1',
                         'Delete failed: directory could not be removed.'))
 .then(() => deleteTest('/dev_root/test/hihi/hello/', false, 'Delete Test 2',
