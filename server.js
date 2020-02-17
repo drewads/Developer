@@ -34,8 +34,8 @@ const server = http.createServer((request, response) => {
             response.end();
         })
         .catch((error) => {
-            response.writeHead(error.statusCode, error.responseHeaders);
             response.setHeader('Content-Type', 'text/plain');
+            response.writeHead(error.statusCode, error.responseHeaders);
             response.write(error.message);
             response.end();
         })
