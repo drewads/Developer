@@ -48,8 +48,8 @@ const compareAndPrintResults = (testName, responseText, expectedResponse) => {
  * @param {string} devModule 
  * @param {JavaScript Object} headers 
  * @param {JavaScript Object} body 
- * @param {*} testName 
- * @param {*} expectedResult 
+ * @param {string} testName 
+ * @param {string} expectedResult 
  */
 const genericTest = (method, devModule, headers, body, testName, expectedResult) => {
     return new Promise(resolve => {
@@ -70,6 +70,7 @@ const genericTest = (method, devModule, headers, body, testName, expectedResult)
         for (const header in headers) {
             request.setRequestHeader(header, headers[header]);
         }
+
         request.send(body);
     });
 }
@@ -84,12 +85,12 @@ const genericTest = (method, devModule, headers, body, testName, expectedResult)
  * @param {string} expectedResult the expected HTTP response body text
  * @return {Promise} resolved when test completes
  */
-const createTest = (filepath, isDir, testName, expectedResult) => {
+const createTest = async (filepath, isDir, testName, expectedResult) => {
     // HTTP request headers
     const headers = {'Content-Type': 'application/json'};
     // HTTP request body, a JSON string encoding of Javascript Object
     const body = JSON.stringify({'Filepath' : filepath, 'isDirectory': isDir});
-    return genericTest('PUT', 'create', headers, body, testName, expectedResult);
+    return await genericTest('PUT', 'create', headers, body, testName, expectedResult);
 }
 
 /**
@@ -99,13 +100,26 @@ const createTest = (filepath, isDir, testName, expectedResult) => {
  * @param {string} newPath path to move the object to
  * @param {string} testName name of this test
  * @param {string} expectedResult the expected HTTP response body text
+ * @return {Promise} resolved when test completes
  */
-const moveTest = (oldPath, newPath, testName, expectedResult) => {
+const moveTest = async (oldPath, newPath, testName, expectedResult) => {
     // HTTP request headers
     const headers = {'Content-Type': 'application/json'};
     // HTTP request body
     const body = JSON.stringify({'oldPath': oldPath, 'newPath': newPath});
-    return genericTest('PATCH', 'move', headers, body, testName, expectedResult);
+    return await genericTest('PATCH', 'move', headers, body, testName, expectedResult);
+}
+
+/**
+ * dirSnapshotTest uses genericTest to make one test for the dir-snapshot dev module.
+ * 
+ * @param {string} dirPath path to the directory to take snapshot of
+ * @param {string} testName name of this test
+ * @param {string} expectedResult the expected HTTP response body text
+ * @return {Promise} resolved when test completes
+ */
+const dirSnapshotTest = async (dirPath, testName, expectedResult) => {
+    return await genericTest('GET', 'dir-snapshot?Directory=' + dirPath, {}, '', testName, expectedResult);
 }
 
 /**
@@ -217,6 +231,22 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'Directory successfull
                         JSON.stringify({'oldPath': '/dev_root/test/hihi/hello', 'nonewPath': 'hi'}),
                         'Move Test 16', 'Move failed: request body has incorrect content type/format.'))
 .catch(error => alert('Something went wrong with move tests.'))
+.then(() => document.body.appendChild(document.createElement('br')))
+
+/******************** Testing for Dir-Snapshot Module ********************/
+.then(() => dirSnapshotTest('/dev_root/test/hihi/', 'DirSnapshot Test 1',
+                            JSON.stringify([{'name': 'hello', 'isDir': true},
+                            {'name': 'more', 'isDir': true}, {'name': 'script.js', 'isDir': false}])))
+.then(() => dirSnapshotTest('/dev_root/test/hihi/hello/helloChild3', 'DirSnapshot Test 2',
+                            JSON.stringify([])))
+.then(() => dirSnapshotTest('/dev_root/test/hihi/more', 'DirSnapshot Test 3',
+                            JSON.stringify([{'name': 'insideMore', 'isDir': true},
+                            {'name': 'moreFile.htaccess', 'isDir': false},
+                            {'name': 'script.js', 'isDir': false}, {'name': 'subhello', 'isDir': true},
+                            {'name': 'toBeInsideMore', 'isDir': true}])))
+.then(() => dirSnapshotTest('/dev_root/test/hihi/more/toBeInsideMore/', 'DirSnapshot Test 4',
+                            JSON.stringify([{'name': 'index.html', 'isDir': false}])))
+.catch(error => alert('Something went wrong with dir-snapshot tests.'))
 .then(() => document.body.appendChild(document.createElement('br')))
 
 /******************** Testing for Delete Module ********************/
