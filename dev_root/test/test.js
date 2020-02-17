@@ -28,6 +28,8 @@ const compareAndPrintResults = (testName, responseText, expectedResponse) => {
     + (responseText === expectedResponse ? 'Success' : 'Failure')
     + '. ' + testName + ': ' + responseText;
 
+    curElem.style.color = (responseText === expectedResponse ? 'green' : 'red');
+
     document.body.appendChild(curElem);
 }
 
