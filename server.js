@@ -30,11 +30,12 @@ const server = http.createServer((request, response) => {
         cdi.handle(request, systemRoot)
         .then((success) => {
             response.writeHead(success.statusCode, success.responseHeaders);
-            response.write(success.message);
+            response.write(success.body);
             response.end();
         })
         .catch((error) => {
             response.writeHead(error.statusCode, error.responseHeaders);
+            response.setHeader('Content-Type', 'text/plain');
             response.write(error.message);
             response.end();
         })
