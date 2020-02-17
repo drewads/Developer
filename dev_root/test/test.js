@@ -234,7 +234,7 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'Directory successfull
 .then(() => document.body.appendChild(document.createElement('br')))
 
 /******************** Testing for Dir-Snapshot Module ********************/
-.then(() => dirSnapshotTest('/dev_root/test/hihi/', 'DirSnapshot Test 1',
+.then(() => dirSnapshotTest('/dev_root/test/hihi/&RandoGarbage=37', 'DirSnapshot Test 1',
                             JSON.stringify([{'name': 'hello', 'isDir': true},
                             {'name': 'more', 'isDir': true}, {'name': 'script.js', 'isDir': false}])))
 .then(() => dirSnapshotTest('/dev_root/test/hihi/hello/helloChild3', 'DirSnapshot Test 2',
@@ -246,6 +246,14 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'Directory successfull
                             {'name': 'toBeInsideMore', 'isDir': true}])))
 .then(() => dirSnapshotTest('/dev_root/test/hihi/more/toBeInsideMore/', 'DirSnapshot Test 4',
                             JSON.stringify([{'name': 'index.html', 'isDir': false}])))
+.then(() => dirSnapshotTest('/dev_root/test/hihi/thisDontexist/', 'DirSnapshot Test 5',
+                            'directory does not exist'))
+.then(() => dirSnapshotTest('/dev_root/test/hihi/script.js', 'DirSnapshot Test 6',
+                            'filesystem entry is not a directory'))
+.then(() => genericTest('POST', 'dir-snapshot?Directory=', {}, '', 'DirSnapshot Test 7',
+                        'method not allowed'))
+.then(() => genericTest('GET', 'dir-snapshot?Direcory=/dev_root/test/hihi/&RandoGarbage=37', {}, '',
+                        'DirSnapshot Test 8', 'incorrect querystring'))
 .catch(error => alert('Something went wrong with dir-snapshot tests.'))
 .then(() => document.body.appendChild(document.createElement('br')))
 
