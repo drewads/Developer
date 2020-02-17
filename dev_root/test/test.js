@@ -122,6 +122,20 @@ const dirSnapshotTest = async (dirPath, testName, expectedResult) => {
     return await genericTest('GET', 'dir-snapshot?Directory=' + dirPath, {}, '', testName, expectedResult);
 }
 
+// put saveTest here
+
+/**
+ * editTest uses genericTest to make one test for the edit dev module.
+ * 
+ * @param {string} fileath path to the file to get contents of
+ * @param {string} testName name of this test
+ * @param {string} expectedResult the expected HTTP response body text
+ * @return {Promise} resolved when test completes
+ */
+const editTest = async (filepath, testName, expectedResult) => {
+    return await genericTest('GET', 'edit?Filepath=' + filepath, {}, '', testName, expectedResult);
+}
+
 /**
  * deleteTest uses genericTest to make one test for the delete dev module.
  * 
@@ -255,6 +269,19 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'Directory successfull
 .then(() => genericTest('GET', 'dir-snapshot?Direcory=/dev_root/test/hihi/&RandoGarbage=37', {}, '',
                         'DirSnapshot Test 8', 'incorrect querystring'))
 .catch(error => alert('Something went wrong with dir-snapshot tests.'))
+.then(() => document.body.appendChild(document.createElement('br')))
+
+/******************** Testing for Edit Module ********************/
+// need more tests here -- below is just tests that trigger errors
+.then(() => editTest('/dev_root/test/hihi/hello/helloChild3', 'Edit Test 1',
+                    'filesystem entry is a directory'))
+.then(() => editTest('/dev_root/test/hihi/thisDoesntExist.txt', 'Edit Test 2',
+                    'file does not exist'))
+.then(() => genericTest('POST', 'edit?Filepath=/dev_root/test/hihi/text.txt', {}, '',
+                    'Edit Test 3', 'method not allowed'))
+.then(() => genericTest('GET', 'edit?Filpath=/dev_root/test/hihi/text.txt', {}, '',
+                    'Edit Test 4', 'incorrect querystring'))
+.catch(error => alert('Something went wrong with edit tests.'))
 .then(() => document.body.appendChild(document.createElement('br')))
 
 /******************** Testing for Delete Module ********************/
