@@ -203,6 +203,8 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'Directory successfull
                         'File successfully created.'))
 .then(() => createTest('/dev_root/test/hihi/helloChild3', true, 'Create Test 18',
                         'Directory successfully created.'))
+.then(() => createTest('/../gotcha.txt', false, 'Create Test 19',
+                        'Create failed: invalid filepath.'))
 .catch(error => alert('Something went wrong with Create tests.'))
 .then(() => document.body.appendChild(document.createElement('br')))
 
@@ -244,6 +246,10 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'Directory successfull
 .then(() => genericTest('PATCH', 'move', {'Content-Type': 'application/json'},
                         JSON.stringify({'oldPath': '/dev_root/test/hihi/hello', 'nonewPath': 'hi'}),
                         'Move Test 16', 'Move failed: request body has incorrect content type/format.'))
+.then(() => moveTest('/../thisIsAboveRoot/hello/gday.html', '/dev_root/test/hihi/goodday.html',
+                        'Move Test 17', 'Move failed: invalid filepath.'))
+.then(() => moveTest('/dev_root/test/hihi/goodday.txt', '/dev_root/../../aboveRoot/test/hihi/goodday.html',
+                    'Move Test 18', 'Move failed: invalid filepath.'))
 .catch(error => alert('Something went wrong with move tests.'))
 .then(() => document.body.appendChild(document.createElement('br')))
 
@@ -268,6 +274,7 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'Directory successfull
                         'method not allowed'))
 .then(() => genericTest('GET', 'dir-snapshot?Direcory=/dev_root/test/hihi/&RandoGarbage=37', {}, '',
                         'DirSnapshot Test 8', 'incorrect querystring'))
+.then(() => dirSnapshotTest('/../thisIsAboveRoot/hi', 'DirSnapshot Test 9', 'invalid filepath'))
 .catch(error => alert('Something went wrong with dir-snapshot tests.'))
 .then(() => document.body.appendChild(document.createElement('br')))
 
@@ -281,6 +288,8 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'Directory successfull
                     'Edit Test 3', 'method not allowed'))
 .then(() => genericTest('GET', 'edit?Filpath=/dev_root/test/hihi/text.txt', {}, '',
                     'Edit Test 4', 'incorrect querystring'))
+.then(() => editTest('/../../WayAboveRoot/thisDoesntExist.txt', 'Edit Test 5',
+                    'invalid filepath'))
 .catch(error => alert('Something went wrong with edit tests.'))
 .then(() => document.body.appendChild(document.createElement('br')))
 
@@ -337,4 +346,6 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'Directory successfull
                         'Delete failed: request body could not be parsed as JSON.'))
 .then(() => deleteTest('/dev_root/test/hihi', true, 'Delete Test 11',
                         'Directory successfully deleted.'))
+.then(() => deleteTest('/../thisIsAboveRoot', true, 'Delete Test 12',
+                        'Delete failed: invalid filepath.'))
 .catch(error => alert('Something went wrong with Delete tests.'));
