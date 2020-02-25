@@ -347,4 +347,12 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'directory successfull
                         'directory successfully deleted'))
 .then(() => deleteTest('/../thisIsAboveRoot', true, 'Delete Test 12',
                         'invalid filepath'))
-.catch(error => alert('Something went wrong with Delete tests.'));
+.catch(error => alert('Something went wrong with Delete tests.'))
+.then(() => document.body.appendChild(document.createElement('br')))
+
+.then(() => {
+    const finalElem = document.createElement('div');
+    finalElem.innerText = 'End Tests.';
+    document.body.appendChild(finalElem);
+});
+/**************************************** End Tests ****************************************/
