@@ -156,100 +156,100 @@ const deleteTest = async (filepath, isDir, testName, expectedResult) => {
 /**************************************** Tests ****************************************/
 
 /******************** Testing for Create Module ********************/
-createTest('/dev_root/test/hihi', true, 'Create Test -1', 'Directory successfully created.')
+createTest('/dev_root/test/hihi', true, 'Create Test -1', 'directory successfully created')
 .then(() => createTest('/dev_root/test/hihi/hello/', true, 'Create Test 0',
-                        'Directory successfully created.'))
+                        'directory successfully created'))
 .then(() => createTest('/dev_root/test/hihi/toDelete.txt', false, 'Create Test 1',
-                        'File successfully created.'))
+                        'file successfully created'))
 .then(() => createTest('/dev_root/test/hihi/hello', true, 'Create Test 2',
-                        'Directory already exists in filesystem.'))
+                        'directory already exists in filesystem'))
 .then(() => createTest('/dev_root/test/hihi/toDelete.txt', false, 'Create Test 3',
-                        'File already exists in filesystem.'))
+                        'file already exists in filesystem'))
 .then(() => genericTest('GET', 'create', {'Content-Type': 'application/json'},
                         JSON.stringify({'Filepath' : '/dev_root/test/hihi/toDelete.txt',
                                         'isDirectory' : false}),
-                        'Create Test 4', 'Create failed: method not allowed.'))
+                        'Create Test 4', 'method not allowed'))
 .then(() => genericTest('PUT', 'create', {'Content-Type': 'application/json'},
                         {'isDirectory' : false}, 'Create Test 5',
-                        'Create failed: request body could not be parsed as JSON.'))
+                        'request body could not be parsed as JSON'))
 .then(() => genericTest('PUT', 'create', {'Content-Type': 'application/json'},
                         JSON.stringify({'isDirectory' : false}), 'Create Test 6',
-                        'Create failed: request body has incorrect content type/format.'))
+                        'request body has incorrect content type/format'))
 .then(() => createTest('/dev_root/test/hihi/more', true, 'Create Test 7',
-                        'Directory successfully created.'))
+                        'directory successfully created'))
 .then(() => createTest('/dev_root/test/hihi/hello/subhello', true, 'Create Test 8',
-                        'Directory successfully created.'))
+                        'directory successfully created'))
 .then(() => createTest('/dev_root/test/hihi/hello/helloChild2', true, 'Create Test 8a',
-                        'Directory successfully created.'))
+                        'directory successfully created'))
 .then(() => createTest('/dev_root/test/hihi/hello/helloChild3', true, 'Create Test 8c',
-                        'Directory successfully created.'))
+                        'directory successfully created'))
 .then(() => createTest('/dev_root/test/hihi/hello/index.html', false, 'Create Test 9',
-                        'File successfully created.'))
+                        'file successfully created'))
 .then(() => createTest('/dev_root/test/hihi/hello/styles.css', false, 'Create Test 10',
-                        'File successfully created.'))
+                        'file successfully created'))
 .then(() => createTest('/dev_root/test/hihi/hello/script.js', false, 'Create Test 11',
-                        'File successfully created.'))
+                        'file successfully created'))
 .then(() => createTest('/dev_root/test/hihi/more/insideMore', true, 'Create Test 12',
-                        'Directory successfully created.'))
+                        'directory successfully created'))
 .then(() => createTest('/dev_root/test/hihi/more/moreFile.htaccess', false, 'Create Test 13',
-                        'File successfully created.'))
+                        'file successfully created'))
 .then(() => createTest('/dev_root/test/hihi/toBeInsideMore', true, 'Create Test 14',
-                        'Directory successfully created.'))
+                        'directory successfully created'))
 .then(() => createTest('/dev_root/test/hihi/index.html', false, 'Create Test 15',
-                        'File successfully created.'))
+                        'file successfully created'))
 .then(() => createTest('/dev_root/test/hihi/styles.css', false, 'Create Test 16',
-                        'File successfully created.'))
+                        'file successfully created'))
 .then(() => createTest('/dev_root/test/hihi/script.js', false, 'Create Test 17',
-                        'File successfully created.'))
+                        'file successfully created'))
 .then(() => createTest('/dev_root/test/hihi/helloChild3', true, 'Create Test 18',
-                        'Directory successfully created.'))
+                        'directory successfully created'))
 .then(() => createTest('/../gotcha.txt', false, 'Create Test 19',
-                        'Create failed: invalid filepath.'))
+                        'invalid filepath'))
 .catch(error => alert('Something went wrong with Create tests.'))
 .then(() => document.body.appendChild(document.createElement('br')))
 
 /******************** Testing for Move Module ********************/
 .then(() => moveTest('/dev_root/test/hihi/index.html', '/dev_root/test/hihi/toBeInsideMore/index.html',
-        'Move Test 1', 'Move successful.'))
+        'Move Test 1', 'move successful'))
 .then(() => moveTest('/dev_root/test/hihi/toBeInsideMore', '/dev_root/test/hihi/more/toBeInsideMore',
-                    'Move Test 2', 'Move successful.'))
+                    'Move Test 2', 'move successful'))
 .then(() => moveTest('/dev_root/test/hihi/toDelete.txt',
                     '/dev_root/test/hihi/hello/helloChild2/toDelete.txt',
-                    'Move Test 3', 'Move successful.'))
+                    'Move Test 3', 'move successful'))
 .then(() => moveTest('/dev_root/test/hihi/script.js', '/dev_root/test/hihi/more/script.js',
-                    'Move Test 4', 'Move successful.'))
+                    'Move Test 4', 'move successful'))
 .then(() => moveTest('/dev_root/test/hihi/hello/script.js', '/dev_root/test/hihi/script.js',
-                    'Move Test 5', 'Move successful.'))
+                    'Move Test 5', 'move successful'))
 .then(() => moveTest('/dev_root/test/hihi/hello/styles.css',
                     '/dev_root/test/hihi/hello/subhello/styles.css',
-                    'Move Test 6', 'Move successful.'))
+                    'Move Test 6', 'move successful'))
 .then(() => moveTest('/dev_root/test/hihi/hello/subhello', '/dev_root/test/hihi/more/subhello',
-                    'Move Test 7', 'Move successful.'))
+                    'Move Test 7', 'move successful'))
 .then(() => moveTest('/dev_root/test/hihi/styles.css', '/dev_root/test/hihi/more/subhello/styles.css',
-                    'Move Test 8', 'Move successful.'))
+                    'Move Test 8', 'move successful'))
 .then(() => moveTest('/dev_root/test/hihi/hello/index.html',
                     '/dev_root/test/hihi/more/toBeInsideMore/index.html',
-                    'Move Test 9', 'Move successful.'))
+                    'Move Test 9', 'move successful'))
 .then(() => moveTest('/dev_root/test/hihi/helloChild3', '/dev_root/test/hihi/hello/helloChild3',
-                    'Move Test 10', 'Move successful.'))
+                    'Move Test 10', 'move successful'))
 .then(() => moveTest('/dev_root/test/hihi/hello/helloChild3', '/dev_root/test/hihi/more',
-                    'Move Test 11', 'Move failed: attempted move to existing nonempty directory.'))
+                    'Move Test 11', 'attempted move to existing nonempty directory'))
 .then(() => moveTest('/dev_root/test/hihi/goodbye', '/dev_root/test/hihi/goodday',
-                    'Move Test 12', 'Move failed: filesystem entry does not exist.'))
+                    'Move Test 12', 'filesystem entry does not exist'))
 .then(() => moveTest('/dev_root/test/hihi/goodday.txt', '/dev_root/test/hihi/goodday.html',
-                    'Move Test 13', 'Move failed: filesystem entry does not exist.'))
+                    'Move Test 13', 'filesystem entry does not exist'))
 .then(() => genericTest('POST', 'move', {'Content-Type': 'application/json'},
                         {'oldPath': '/dev_root/test/hihi/hello', 'newPath': '/dev_root/test/hihi/hi'},
-                        'Move Test 14', 'Move failed: method not allowed.'))
+                        'Move Test 14', 'method not allowed'))
 .then(() => genericTest('PATCH', 'move', {'Content-Type': 'text/plain'}, 'hi', 'Move Test 15',
-                        'Move failed: request body could not be parsed as JSON.'))
+                        'request body could not be parsed as JSON'))
 .then(() => genericTest('PATCH', 'move', {'Content-Type': 'application/json'},
                         JSON.stringify({'oldPath': '/dev_root/test/hihi/hello', 'nonewPath': 'hi'}),
-                        'Move Test 16', 'Move failed: request body has incorrect content type/format.'))
+                        'Move Test 16', 'request body has incorrect content type/format'))
 .then(() => moveTest('/../thisIsAboveRoot/hello/gday.html', '/dev_root/test/hihi/goodday.html',
-                        'Move Test 17', 'Move failed: invalid filepath.'))
+                        'Move Test 17', 'invalid filepath'))
 .then(() => moveTest('/dev_root/test/hihi/goodday.txt', '/dev_root/../../aboveRoot/test/hihi/goodday.html',
-                    'Move Test 18', 'Move failed: invalid filepath.'))
+                    'Move Test 18', 'invalid filepath'))
 .catch(error => alert('Something went wrong with move tests.'))
 .then(() => document.body.appendChild(document.createElement('br')))
 
@@ -295,57 +295,56 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'Directory successfull
 
 /******************** Testing for Delete Module ********************/
 .then(() => deleteTest('/dev_root/test/hihi/hello/helloChild2/toDelete.txt', false, 'Delete Test -2',
-                        'File successfully deleted.'))
+                        'file successfully deleted'))
 .then(() => deleteTest('/dev_root/test/hihi/hello/helloChild2', true, 'Delete Test -2b',
-                        'Directory successfully deleted.'))
+                        'directory successfully deleted'))
 .then(() => deleteTest('/dev_root/test/hihi/hello/helloChild3', true, 'Delete Test -2c',
-                        'Directory successfully deleted.'))
+                        'directory successfully deleted'))
 .then(() => deleteTest('/dev_root/test/hihi/more/insideMore', true, 'Delete Test -1',
-                        'Directory successfully deleted.'))
+                        'directory successfully deleted'))
 .then(() => deleteTest('/dev_root/test/hihi/more/moreFile.htaccess', false,
-                        'Delete Test -1b', 'File successfully deleted.'))
+                        'Delete Test -1b', 'file successfully deleted'))
 .then(() => deleteTest('/dev_root/test/hihi/more/script.js', false,
-                        'Delete Test -1c', 'File successfully deleted.'))
+                        'Delete Test -1c', 'file successfully deleted'))
 .then(() => deleteTest('/dev_root/test/hihi/more/subhello/styles.css', false,
-                        'Delete Test -1d', 'File successfully deleted.'))
+                        'Delete Test -1d', 'file successfully deleted'))
 .then(() => deleteTest('/dev_root/test/hihi/more/subhello', true,
-                        'Delete Test -1e', 'Directory successfully deleted.'))
+                        'Delete Test -1e', 'directory successfully deleted'))
 .then(() => deleteTest('/dev_root/test/hihi/more/toBeInsideMore/index.html', false,
-                        'Delete Test -1f', 'File successfully deleted.'))
+                        'Delete Test -1f', 'file successfully deleted'))
 .then(() => deleteTest('/dev_root/test/hihi/more/toBeInsideMore', true,
-                        'Delete Test -1h', 'Directory successfully deleted.'))
+                        'Delete Test -1h', 'directory successfully deleted'))
 .then(() => deleteTest('/dev_root/test/hihi/more', true, 'Delete Test -1',
-                        'Directory successfully deleted.'))
+                        'directory successfully deleted'))
 .then(() => deleteTest('/dev_root/test/hihi', true, 'Delete Test 0',
-                        'Delete failed: directory not empty.'))
+                        'directory not empty'))
 .then(() => deleteTest('/dev_root/test/hihi/script.js', true, 'Delete Test 1',
-                        'Delete failed: directory could not be removed.'))
+                        'directory could not be removed'))
 .then(() => deleteTest('/dev_root/test/hihi/hello/', false, 'Delete Test 2',
-                        'Delete failed: file could not be removed.'))
+                        'file could not be removed'))
 .then(() => deleteTest('/dev_root/test/hihi/script.js', false, 'Delete Test 3',
-                        'File successfully deleted.'))
+                        'file successfully deleted'))
 .then(() => deleteTest('/dev_root/test/hihi/hello/', true, 'Delete Test 4',
-                        'Directory successfully deleted.'))
+                        'directory successfully deleted'))
 .then(() => deleteTest('/dev_root/test/hihi/hello', true, 'Delete Test 5',
-                        'Delete failed: system object does not exist.'))
+                        'system object does not exist'))
 .then(() => deleteTest('/dev_root/test/hihi/hello/', false, 'Delete Test 6',
-                        'Delete failed: system object does not exist.'))
+                        'system object does not exist'))
 .then(() => genericTest('POST', 'delete', {'Content-Type': 'application/json'},
                         JSON.stringify({'Filepath': '/dev_root/test/hihi/hello/',
-                                        'isDirectory': true}), 'Delete Test 7',
-                        'Delete failed: method not allowed.'))
+                                        'isDirectory': true}), 'Delete Test 7', 'method not allowed'))
 .then(() => genericTest('DELETE', 'delete', {'Content-Type': 'application/json'},
                         JSON.stringify({'Filepath': '/dev_root/test/hihi/toDelete.txt',
                                         'someOtherAttribute': -1}), 'Delete Test 8',
-                        'Delete failed: request body has incorrect content type/format.'))
+                        'request body has incorrect content type/format'))
 .then(() => genericTest('DELETE', 'delete', {'Content-Type': 'text/plain'},
                         'here is my request body', 'Delete Test 9',
-                        'Delete failed: request body could not be parsed as JSON.'))
+                        'request body could not be parsed as JSON'))
 .then(() => genericTest('DELETE', 'delete', {'Content-Type': 'application/json'},
                         'here is my request body', 'Delete Test 10',
-                        'Delete failed: request body could not be parsed as JSON.'))
+                        'request body could not be parsed as JSON'))
 .then(() => deleteTest('/dev_root/test/hihi', true, 'Delete Test 11',
-                        'Directory successfully deleted.'))
+                        'directory successfully deleted'))
 .then(() => deleteTest('/../thisIsAboveRoot', true, 'Delete Test 12',
-                        'Delete failed: invalid filepath.'))
+                        'invalid filepath'))
 .catch(error => alert('Something went wrong with Delete tests.'));
