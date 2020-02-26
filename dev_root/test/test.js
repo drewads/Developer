@@ -37,7 +37,7 @@ const compareAndPrintResults = (testName, response, expectedResponse, expectedHe
             if (expectedHeaders[header] != response.getResponseHeader(header)) {
                 success = false; // some header didn't match
             }
-            seenHeaders[h] = response.getResponseHeader(header); // populate object of headers w/ response
+            seenHeaders[header] = response.getResponseHeader(header); // populate object of headers w/ response
         });
     }
 
@@ -339,40 +339,7 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'directory successfull
 .catch(error => alert('Something went wrong with dir-snapshot tests.'))
 .then(() => document.body.appendChild(document.createElement('br')))
 
-/******************** Testing for Just Edit Module ********************/
-// just tests that trigger errors
-.then(() => editTest('/dev_root/test/hihi/hello/helloChild3', 'Edit Test 1',
-                    'filesystem entry is a directory', {}))
-.then(() => editTest('/dev_root/test/hihi/thisDoesntExist.txt', 'Edit Test 2',
-                    'file does not exist', {}))
-.then(() => genericTest('POST', 'edit?Filepath=/dev_root/test/hihi/text.txt', {}, '',
-                    'Edit Test 3', 'method not allowed'))
-.then(() => genericTest('GET', 'edit?Filpath=/dev_root/test/hihi/text.txt', {}, '',
-                    'Edit Test 4', 'incorrect querystring'))
-.then(() => editTest('/../../WayAboveRoot/thisDoesntExist.txt', 'Edit Test 5',
-                    'invalid filepath', {}))
-.catch(error => alert('Something went wrong with edit tests.\n' + error))
-.then(() => document.body.appendChild(document.createElement('br')))
-
-/******************** Testing for Edit and Save Modules ********************/
-// edit /dev_root/test/hihi/script.js get '', 'Content-Type': 'text/javascript'
-// save /dev_root/test/hihi/script.js '//this is inner text of script.js' 'Content-Type': 'text/javascript'
-// edit /dev_root/test/hihi/script.js get 'this is inner text of script.js', 'Content-Type': 'text/javascript'
-
-// edit /dev_root/test/hihi/more/moreFile get '', 'Content-Type': null
-// save /dev_root/test/hihi/more/moreFile 'this is inside moreFile\n wow' 'Content-Type': null
-// edit /dev_root/test/hihi/script.js get 'this is inside moreFile\n wow', 'Content-Type': null
-
-// edit /dev_root/test/hihi/more/toBeInsideMore/index.html get '', 'Content-Type': 'text/html'
-// save /dev_root/test/hihi/more/toBeInsideMore/index.html '<!DOCTYPE html>', 'Content-Type': 'text/html'
-// edit /dev_root/test/hihi/more/toBeInsideMore/index.html get '<!DOCTYPE html>', 'Content-Type': 'text/html'
-
-// Content-Type is set in edit.js to null if file has no extension. Test whether this is a problem here.
-/*.catch(error => alert('Something went wrong with edit tests.\n' + error))
-.then(() => document.body.appendChild(document.createElement('br')))*/
-
-/******************** Testing for Just Save Module ********************/
-// just tests that trigger errors / don't require edit
+/******************** Testing for Save Module ********************/
 .then(() => saveTest('/dev_root/test/hihi/newFile.txt', 'hi', {'Content-Type': 'text/plain'},
                     'Save Test 1', 'file successfully saved'))
 .then(() => saveTest('/dev_root/test/hihi/hello/helloChild3', 'bye', {'Content-Type': 'text/plain'},
@@ -383,7 +350,33 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'directory successfull
                         'hello', 'Save Test 4', 'incorrect querystring'))
 .then(() => saveTest('/../../WayAboveRoot/thisDoesntExist.txt', 'hi', {'Content-Type': 'text/plain'},
                     'Save Test 5', 'invalid filepath'))
+.then(() => saveTest('/dev_root/test/hihi/script.js', '//this is inner text of script.js', {'Content-Type': 'text/javascript'},
+                    'Save Test 6', 'file successfully saved'))
+.then(() => saveTest('/dev_root/test/hihi/more/moreFile', 'this is inside moreFile\n wow', {'Content-Type': null},
+                    'Save Test 7', 'file successfully saved'))
+.then(() => saveTest('/dev_root/test/hihi/more/toBeInsideMore/index.html', '<!DOCTYPE html>', {'Content-Type': 'text/html'},
+                    'Save Test 8', 'file successfully saved'))
 .catch(error => alert('Something went wrong with save tests.\n' + error))
+.then(() => document.body.appendChild(document.createElement('br')))
+
+/******************** Testing for Edit Module ********************/
+.then(() => editTest('/dev_root/test/hihi/hello/helloChild3', 'Edit Test 1',
+                    'filesystem entry is a directory', {}))
+.then(() => editTest('/dev_root/test/hihi/thisDoesntExist.txt', 'Edit Test 2',
+                    'file does not exist', {}))
+.then(() => genericTest('POST', 'edit?Filepath=/dev_root/test/hihi/text.txt', {}, '',
+                    'Edit Test 3', 'method not allowed'))
+.then(() => genericTest('GET', 'edit?Filpath=/dev_root/test/hihi/text.txt', {}, '',
+                    'Edit Test 4', 'incorrect querystring'))
+.then(() => editTest('/../../WayAboveRoot/thisDoesntExist.txt', 'Edit Test 5',
+                    'invalid filepath', {}))
+.then(() => editTest('/dev_root/test/hihi/script.js', 'Edit Test 6',
+                        '//this is inner text of script.js', {'Content-Type': 'application/javascript'}))
+.then(() => editTest('/dev_root/test/hihi/more/moreFile', 'Edit Test 7',
+                        'this is inside moreFile\n wow', {'Content-Type': 'null'}))
+.then(() => editTest('/dev_root/test/hihi/more/toBeInsideMore/index.html', 'Edit Test 8',
+                        '<!DOCTYPE html>', {'Content-Type': 'text/html'}))
+.catch(error => alert('Something went wrong with edit tests.\n' + error))
 .then(() => document.body.appendChild(document.createElement('br')))
 
 /******************** Testing for Delete Module ********************/
