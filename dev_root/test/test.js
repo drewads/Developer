@@ -198,6 +198,18 @@ const saveTest = async (filepath, data, headers, testName, expectedResult) => {
 }
 
 /**
+ * existsTest uses genericTest to make one test for the exists dev module.
+ * 
+ * @param {string} filepath path to the file to check
+ * @param {string} testName name of this test
+ * @param {string} expectedResult the expected HTTP response body text
+ * @return {Promise} resolved when test completes
+ */
+const existsTest = async (filepath, testName, expectedResult) => {
+    return await genericTest('GET', 'exists?Filepath=' + filepath,  {}, {}, testName, expectedResult);
+}
+
+/**
  * deleteTest uses genericTest to make one test for the delete dev module.
  * 
  * @param {string} filepath path of the object to delete
@@ -377,6 +389,18 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'directory successfull
 .then(() => editTest('/dev_root/test/hihi/more/toBeInsideMore/index.html', 'Edit Test 8',
                         '<!DOCTYPE html>', {'Content-Type': 'text/html'}))
 .catch(error => alert('Something went wrong with edit tests.\n' + error))
+.then(() => document.body.appendChild(document.createElement('br')))
+
+/******************** Testing for Exists Module ********************/
+.then(() => genericTest('POST', 'exists?Filepath=/dev_root/test/hihi', {}, '', 'Exists Test 1',
+                        'method not allowed'))
+.then(() => genericTest('GET', 'exists?Fiepat=/dev_root/test/hihi', {}, '', 'Exists Test 2',
+                        'incorrect querystring'))
+.then(() => existsTest('/dev_root/../above/../../root', 'Exists Test 3', 'invalid filepath'))
+.then(() => existsTest('/dev_root/test/hihi/script.js', 'Exists Test 4', 'filesystem entry exists'))
+.then(() => existsTest('/dev_root/test/hihi/nonExistent.txt', 'Exists Test 5',
+                        'filesystem entry does not exist'))
+.catch(error => alert('Something went wrong with exists tests.\n' + error))
 .then(() => document.body.appendChild(document.createElement('br')))
 
 /******************** Testing for Delete Module ********************/
