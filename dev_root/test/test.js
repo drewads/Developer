@@ -184,19 +184,17 @@ const editTest = async (filepath, testName, expectedResult, expectedHeaders) => 
 }
 
 /**
- * saveTest uses genericTestWithHeaders to make one test for the save dev module.
+ * saveTest uses genericTest to make one test for the save dev module.
  * 
  * @param {string} filepath path to the file to write to
  * @param {string} data data to write to file
  * @param {object} headers HTTP request headers
  * @param {string} testName name of this test
  * @param {string} expectedResult the expected HTTP response body text
- * @param {object} expectedHeaders the expected HTTP response headers
  * @return {Promise} resolved when test completes
  */
-const saveTest = async (filepath, data, headers, testName, expectedResult, expectedHeaders) => {
-    return await genericTestWithHeaders('PUT', 'save?Filepath=' + filepath, headers, data, testName,
-                                        expectedResult, expectedHeaders, true);
+const saveTest = async (filepath, data, headers, testName, expectedResult) => {
+    return await genericTest('PUT', 'save?Filepath=' + filepath, headers, data, testName, expectedResult);
 }
 
 /**
@@ -348,9 +346,9 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'directory successfull
 .then(() => editTest('/dev_root/test/hihi/thisDoesntExist.txt', 'Edit Test 2',
                     'file does not exist', {}))
 .then(() => genericTest('POST', 'edit?Filepath=/dev_root/test/hihi/text.txt', {}, '',
-                    'Edit Test 3', 'method not allowed', {}))
+                    'Edit Test 3', 'method not allowed'))
 .then(() => genericTest('GET', 'edit?Filpath=/dev_root/test/hihi/text.txt', {}, '',
-                    'Edit Test 4', 'incorrect querystring', {}))
+                    'Edit Test 4', 'incorrect querystring'))
 .then(() => editTest('/../../WayAboveRoot/thisDoesntExist.txt', 'Edit Test 5',
                     'invalid filepath', {}))
 .catch(error => alert('Something went wrong with edit tests.\n' + error))
@@ -374,12 +372,23 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'directory successfull
 .then(() => document.body.appendChild(document.createElement('br')))*/
 
 /******************** Testing for Just Save Module ********************/
-// just tests that trigger errors
-/*
+// just tests that trigger errors / don't require edit
+.then(() => saveTest('/dev_root/test/hihi/newFile.txt', 'hi', {'Content-Type': 'text/plain'},
+                    'Save Test 1', 'file successfully saved'))
+.then(() => saveTest('/dev_root/test/hihi/hello/helloChild3', 'bye', {'Content-Type': 'text/plain'},
+                    'Save Test 2', 'filesystem entry is a directory'))
+.then(() => genericTest('GET', 'save?Filepath=/dev_root/test/hihi/text.txt',
+                        {'Content-Type': 'text/plain'}, 'hello', 'Save Test 3', 'method not allowed'))
+.then(() => genericTest('PUT', 'save?Filpath=/dev_root/test/hihi/text.txt', {'Content-Type': 'text/plain'},
+                        'hello', 'Save Test 4', 'incorrect querystring'))
+.then(() => saveTest('/../../WayAboveRoot/thisDoesntExist.txt', 'hi', {'Content-Type': 'text/plain'},
+                    'Save Test 5', 'invalid filepath'))
 .catch(error => alert('Something went wrong with save tests.\n' + error))
-.then(() => document.body.appendChild(document.createElement('br')))*/
+.then(() => document.body.appendChild(document.createElement('br')))
 
 /******************** Testing for Delete Module ********************/
+.then(() => deleteTest('/dev_root/test/hihi/newFile.txt', false, 'Delete Test -3',
+                        'file successfully deleted'))
 .then(() => deleteTest('/dev_root/test/hihi/hello/helloChild2/toDelete.txt', false, 'Delete Test -2',
                         'file successfully deleted'))
 .then(() => deleteTest('/dev_root/test/hihi/hello/helloChild2', true, 'Delete Test -2b',
