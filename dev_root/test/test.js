@@ -16,49 +16,73 @@ const DONE_STATE = 4; // when the HTTP request is completely finished, including
  * body, evaluating whether the test was successful, and creates a new HTML element
  * in the DOM containing success/failure info, test name, and HTTP response received.
  * 
+ * If desired (`compHeaders === true`), this function compares response headers with expected.
+ * 
  * @param {string} testName the name of this test
- * @param {string} responseText the HTTP response body
+ * @param {XMLHttpRequest} response the HTTP request
  * @param {string} expectedResponse the expected HTTP response body
+ * @param {object} expectedHeaders javascript object of expected HTTP response headers
+ * @param {boolean} compHeaders true if comparison of headers is desired, false otherwise
  */
-const compareAndPrintResults = (testName, responseText, expectedResponse) => {
+const compareAndPrintResults = (testName, response, expectedResponse, expectedHeaders, compHeaders) => {
     const curElem = document.createElement("div");
+
+    // first, check that response body is as expected
+    let success = response.response === expectedResponse;
+    let seenHeaders = {}; // these are going to be the response headers we are looking for
+
+    // compare response headers with expected
+    if (compHeaders) {
+        Object.keys(expectedHeaders).forEach(header => {
+            if (expectedHeaders[header] != response.getResponseHeader(header)) {
+                success = false; // some header didn't match
+            }
+            seenHeaders[h] = response.getResponseHeader(header); // populate object of headers w/ response
+        });
+    }
 
     // formatted information about the test that is displayed
     curElem.innerText = 'Test '
-    + (responseText === expectedResponse ? 'Success' : 'Failure')
-    + '. ' + testName + ': ' + responseText;
+    + (success ? 'Success' : 'Failure')
+    + '. ' + testName + ': ' + response.response
+    + (compHeaders ? '  |  ' + JSON.stringify(seenHeaders) : ''); // last line is response headers
 
-    curElem.style.color = (responseText === expectedResponse ? 'green' : 'red');
+    curElem.style.color = (success ? 'green' : 'red');
 
     document.body.appendChild(curElem);
 }
 
-/*
-* This is a generic function that carries out a full single test. This has a lot
-* of parameters, so wrapper functions are created below for each dev module.
-* However, this gives us some flexibility to create some extra tests for a dev
-* module that don't fit the typical mold. This function returns a Promise.
-*
-* Note to caller: if parameter body is JSON, it must already be stringified.
-* parameter headers is a JavaScript object with request headers as key-value pairs.
-*/
 /**
+ * This is a generic function that carries out a full single test. This has a lot
+ * of parameters, so wrapper functions are created below for each dev module.
+ * However, this gives us some flexibility to create some extra tests for a dev
+ * module that don't fit the typical mold. This function returns a Promise.
+ *
+ * Note to caller: if parameter body is JSON, it must already be stringified.
+ * parameter headers is a JavaScript object with request headers as key-value pairs.
  * 
+ * This even more generic version of the genericTest function will compare response
+ * headers with a given javascript object.
+ *
  * @param {string} method 
  * @param {string} devModule 
  * @param {JavaScript Object} headers 
  * @param {JavaScript Object} body 
  * @param {string} testName 
  * @param {string} expectedResult 
+ * @param {object} expectedHeaders
+ * @param {boolean} compareHeaders
+ * @returns {Promise} Promise resolved on end of test
  */
-const genericTest = (method, devModule, headers, body, testName, expectedResult) => {
+const genericTestWithHeaders = (method, devModule, headers, body, testName, expectedResult, expectedHeaders, compareHeaders) => {
     return new Promise(resolve => {
         const request = new XMLHttpRequest();
 
         // when we get the entire HTTP response back from the server
         request.onreadystatechange = () => {
             if (request.readyState === DONE_STATE) {
-                compareAndPrintResults(testName, request.response, expectedResult);
+                compareAndPrintResults(testName, request, expectedResult,
+                                        expectedHeaders, compareHeaders);
                 resolve();
             }
         }
@@ -73,6 +97,27 @@ const genericTest = (method, devModule, headers, body, testName, expectedResult)
 
         request.send(body);
     });
+}
+
+/**
+ * This is a generic function that carries out a full single test. This has a lot
+ * of parameters, so wrapper functions are created below for each dev module.
+ * However, this gives us some flexibility to create some extra tests for a dev
+ * module that don't fit the typical mold. This function returns a Promise.
+ *
+ * Note to caller: if parameter body is JSON, it must already be stringified.
+ * parameter headers is a JavaScript object with request headers as key-value pairs.
+ *
+ * @param {string} method 
+ * @param {string} devModule 
+ * @param {JavaScript Object} headers 
+ * @param {JavaScript Object} body 
+ * @param {string} testName 
+ * @param {string} expectedResult 
+ */
+const genericTest = async (method, devModule, headers, body, testName, expectedResult) => {
+    return await genericTestWithHeaders(method, devModule, headers, body, testName, expectedResult,
+                                        {}, false);
 }
 
 /**
@@ -125,15 +170,33 @@ const dirSnapshotTest = async (dirPath, testName, expectedResult) => {
 // put saveTest here
 
 /**
- * editTest uses genericTest to make one test for the edit dev module.
+ * editTest uses genericTestWithHeaders to make one test for the edit dev module.
  * 
  * @param {string} fileath path to the file to get contents of
  * @param {string} testName name of this test
  * @param {string} expectedResult the expected HTTP response body text
+ * @param {object} expectedHeaders the expected HTTP response headers
  * @return {Promise} resolved when test completes
  */
-const editTest = async (filepath, testName, expectedResult) => {
-    return await genericTest('GET', 'edit?Filepath=' + filepath, {}, '', testName, expectedResult);
+const editTest = async (filepath, testName, expectedResult, expectedHeaders) => {
+    return await genericTestWithHeaders('GET', 'edit?Filepath=' + filepath, {}, '', testName,
+                                        expectedResult, expectedHeaders, true);
+}
+
+/**
+ * saveTest uses genericTestWithHeaders to make one test for the save dev module.
+ * 
+ * @param {string} filepath path to the file to write to
+ * @param {string} data data to write to file
+ * @param {object} headers HTTP request headers
+ * @param {string} testName name of this test
+ * @param {string} expectedResult the expected HTTP response body text
+ * @param {object} expectedHeaders the expected HTTP response headers
+ * @return {Promise} resolved when test completes
+ */
+const saveTest = async (filepath, data, headers, testName, expectedResult, expectedHeaders) => {
+    return await genericTestWithHeaders('PUT', 'save?Filepath=' + filepath, headers, data, testName,
+                                        expectedResult, expectedHeaders, true);
 }
 
 /**
@@ -191,7 +254,7 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'directory successfull
                         'file successfully created'))
 .then(() => createTest('/dev_root/test/hihi/more/insideMore', true, 'Create Test 12',
                         'directory successfully created'))
-.then(() => createTest('/dev_root/test/hihi/more/moreFile.htaccess', false, 'Create Test 13',
+.then(() => createTest('/dev_root/test/hihi/more/moreFile', false, 'Create Test 13',
                         'file successfully created'))
 .then(() => createTest('/dev_root/test/hihi/toBeInsideMore', true, 'Create Test 14',
                         'directory successfully created'))
@@ -261,7 +324,7 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'directory successfull
                             JSON.stringify([])))
 .then(() => dirSnapshotTest('/dev_root/test/hihi/more', 'DirSnapshot Test 3',
                             JSON.stringify([{'name': 'insideMore', 'isDir': true},
-                            {'name': 'moreFile.htaccess', 'isDir': false},
+                            {'name': 'moreFile', 'isDir': false},
                             {'name': 'script.js', 'isDir': false}, {'name': 'subhello', 'isDir': true},
                             {'name': 'toBeInsideMore', 'isDir': true}])))
 .then(() => dirSnapshotTest('/dev_root/test/hihi/more/toBeInsideMore/', 'DirSnapshot Test 4',
@@ -278,20 +341,43 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'directory successfull
 .catch(error => alert('Something went wrong with dir-snapshot tests.'))
 .then(() => document.body.appendChild(document.createElement('br')))
 
-/******************** Testing for Edit Module ********************/
-// need more tests here -- below is just tests that trigger errors
+/******************** Testing for Just Edit Module ********************/
+// just tests that trigger errors
 .then(() => editTest('/dev_root/test/hihi/hello/helloChild3', 'Edit Test 1',
-                    'filesystem entry is a directory'))
+                    'filesystem entry is a directory', {}))
 .then(() => editTest('/dev_root/test/hihi/thisDoesntExist.txt', 'Edit Test 2',
-                    'file does not exist'))
+                    'file does not exist', {}))
 .then(() => genericTest('POST', 'edit?Filepath=/dev_root/test/hihi/text.txt', {}, '',
-                    'Edit Test 3', 'method not allowed'))
+                    'Edit Test 3', 'method not allowed', {}))
 .then(() => genericTest('GET', 'edit?Filpath=/dev_root/test/hihi/text.txt', {}, '',
-                    'Edit Test 4', 'incorrect querystring'))
+                    'Edit Test 4', 'incorrect querystring', {}))
 .then(() => editTest('/../../WayAboveRoot/thisDoesntExist.txt', 'Edit Test 5',
-                    'invalid filepath'))
-.catch(error => alert('Something went wrong with edit tests.'))
+                    'invalid filepath', {}))
+.catch(error => alert('Something went wrong with edit tests.\n' + error))
 .then(() => document.body.appendChild(document.createElement('br')))
+
+/******************** Testing for Edit and Save Modules ********************/
+// edit /dev_root/test/hihi/script.js get '', 'Content-Type': 'text/javascript'
+// save /dev_root/test/hihi/script.js '//this is inner text of script.js' 'Content-Type': 'text/javascript'
+// edit /dev_root/test/hihi/script.js get 'this is inner text of script.js', 'Content-Type': 'text/javascript'
+
+// edit /dev_root/test/hihi/more/moreFile get '', 'Content-Type': null
+// save /dev_root/test/hihi/more/moreFile 'this is inside moreFile\n wow' 'Content-Type': null
+// edit /dev_root/test/hihi/script.js get 'this is inside moreFile\n wow', 'Content-Type': null
+
+// edit /dev_root/test/hihi/more/toBeInsideMore/index.html get '', 'Content-Type': 'text/html'
+// save /dev_root/test/hihi/more/toBeInsideMore/index.html '<!DOCTYPE html>', 'Content-Type': 'text/html'
+// edit /dev_root/test/hihi/more/toBeInsideMore/index.html get '<!DOCTYPE html>', 'Content-Type': 'text/html'
+
+// Content-Type is set in edit.js to null if file has no extension. Test whether this is a problem here.
+/*.catch(error => alert('Something went wrong with edit tests.\n' + error))
+.then(() => document.body.appendChild(document.createElement('br')))*/
+
+/******************** Testing for Just Save Module ********************/
+// just tests that trigger errors
+/*
+.catch(error => alert('Something went wrong with save tests.\n' + error))
+.then(() => document.body.appendChild(document.createElement('br')))*/
 
 /******************** Testing for Delete Module ********************/
 .then(() => deleteTest('/dev_root/test/hihi/hello/helloChild2/toDelete.txt', false, 'Delete Test -2',
@@ -302,7 +388,7 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'directory successfull
                         'directory successfully deleted'))
 .then(() => deleteTest('/dev_root/test/hihi/more/insideMore', true, 'Delete Test -1',
                         'directory successfully deleted'))
-.then(() => deleteTest('/dev_root/test/hihi/more/moreFile.htaccess', false,
+.then(() => deleteTest('/dev_root/test/hihi/more/moreFile', false,
                         'Delete Test -1b', 'file successfully deleted'))
 .then(() => deleteTest('/dev_root/test/hihi/more/script.js', false,
                         'Delete Test -1c', 'file successfully deleted'))
