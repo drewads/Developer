@@ -1,3 +1,17 @@
+// this doesnt actually work on non text files
+const uploadFile = () => {
+    const files = document.getElementById('upload').files;
+    const file = files[0];
+    const upload = new XMLHttpRequest();
+    upload.addEventListener('load', reqListener);
+    upload.open('PUT', 'http://dev.localhost:8080/client-dev-interface/save?Filepath=/dev_root/' + file.name);
+    console.log(file.type);
+    upload.setRequestHeader('Content-Type', file.type);
+    upload.send(file.text);
+}
+
+document.getElementById('upload').onchange = uploadFile;
+
 const request = new XMLHttpRequest();
 
 function formSubmit() {
