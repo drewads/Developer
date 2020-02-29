@@ -3,20 +3,26 @@ const fs = require('fs');
 const url = require('url');
 const mime = require('mime');
 const path = require('path');
+const formidable = require('formidable');
 
 const server = http.createServer((request, response) => {
-    if (request.method === "POST") {
-        let body = [];
-        request.on('data', (chunk) => {
-            body.push(chunk);
+    if (request.method === "PUT") {
+        const form = new formidable.IncomingForm();
+        const parsed = new Promise((resolve, reject) => {
+            form.parse(request, function(err, fields, files) {
+                err ? reject(err) : resolve({fields : fields, files : files});
+            });
         });
-        request.on('end', () => {
-            body = JSON.parse(Buffer.concat(body).toString());
-            console.log(body.Directory);
-            console.log(body.Filename);
-            response.writeHead(200, {'Content-Type': 'text/plain'});
-            response.write('Data received.');
-            response.end();
+
+        parsed.then((args) => {
+            const filepaths = Object.keys(args.files);
+            filepaths.forEach(filepath => {
+                fs.rename(args.files[filepath].path, filepath, (err) => {
+                    if (err) throw err;
+                    response.write('file uploaded and saved at ' + filepath);
+                    response.end();
+                });
+            });
         });
     } else if (request.method === "GET") {
         let query = url.parse(request.url, true);

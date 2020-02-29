@@ -1,27 +1,21 @@
-// this doesnt actually work on non text files
-const uploadFile = () => {
+const uploadFiles = () => {
     const files = document.getElementById('upload').files;
-    const file = files[0];
+    const dir = '/Users/drewwadsworth/documents/Developer/dev_root/test/';
+    const uploadForm = new FormData();
+    uploadForm.append('name', 'drew');
+    for (const file of files) {
+        console.log(file.name);
+        uploadForm.append(dir + file.name, file);
+        console.log(uploadForm);
+    }
+    console.log(uploadForm.entries());
     const upload = new XMLHttpRequest();
     upload.addEventListener('load', reqListener);
-    upload.open('PUT', 'http://dev.localhost:8080/client-dev-interface/save?Filepath=/dev_root/' + file.name);
-    console.log(file.type);
-    upload.setRequestHeader('Content-Type', file.type);
-    upload.send(file.text);
+    upload.open('PUT', 'http://localhost:8080');
+    upload.send(uploadForm);
 }
 
-document.getElementById('upload').onchange = uploadFile;
-
-const request = new XMLHttpRequest();
-
-function formSubmit() {
-    request.addEventListener("load", reqListener);
-    request.open("PUT", "http://dev.localhost:8080/client-dev-interface/create");
-    request.setRequestHeader('Content-Type', 'application/json');
-    let body = {Directory : document.getElementById("inputField1").value,
-                Filename : document.getElementById("inputField2").value};
-    request.send(JSON.stringify(body));
-}
+document.getElementById('upload').onchange = uploadFiles;
 
 function reqListener() {
     alert(this.responseText);
