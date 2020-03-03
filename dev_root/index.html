@@ -85,7 +85,8 @@
                     /main/sub/subsub/file.html
                 </div>
                 <!-- Do something about this event on the following line -->
-                <textarea onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
+                <!-- The following handles the situation where we select text and then press tab.-->
+                <textarea onkeydown='if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;console.log(this.value);this.value=v.substring(0, s)+"\t"+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}'></textarea>
             </div>
             <div id="navigator">
                 <div id="navigatorPath">

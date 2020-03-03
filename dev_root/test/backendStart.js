@@ -20,7 +20,7 @@ const server = http.createServer((request, response) => {
                 fs.rename(args.files[filepath].path, filepath, (err) => {
                     if (err) throw err;
                     response.write('file uploaded and saved at ' + filepath);
-                    response.end();
+                    response.end(); // this doesn't work with multiple files
                 });
             });
         });
