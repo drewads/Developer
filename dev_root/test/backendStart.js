@@ -7,7 +7,7 @@ const formidable = require('formidable');
 
 const server = http.createServer((request, response) => {
     if (request.method === "PUT") {
-        const form = new formidable.IncomingForm();
+        const form = new formidable.IncomingForm({ multiples: true, uploadDir: '/Users/drewwadsworth/documents/Developer/dev_root/test'});
         const parsed = new Promise((resolve, reject) => {
             form.parse(request, function(err, fields, files) {
                 err ? reject(err) : resolve({fields : fields, files : files});
@@ -16,6 +16,7 @@ const server = http.createServer((request, response) => {
 
         parsed.then((args) => {
             const filepaths = Object.keys(args.files);
+            //console.log(filepaths);
             filepaths.forEach(filepath => {
                 fs.rename(args.files[filepath].path, filepath, (err) => {
                     if (err) throw err;
