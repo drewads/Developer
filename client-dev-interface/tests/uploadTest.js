@@ -34,7 +34,7 @@ const uploadFiles = (files, dir, requestMethod, altBody = null) => {
             }
         }
 
-        upload.open(requestMethod, 'http://dev.localhost:8080/client-dev-interface/upload');
+        upload.open(requestMethod, 'http://localhost:8080/client-dev-interface/upload');
         upload.send((altBody ? altBody : uploadForm));
     });
 }
@@ -65,22 +65,22 @@ const printResults = (response, expected, testNumber) => {
 // trigger uploadFiles() when files are selected with the filepicker input element
 document.getElementById('upload').addEventListener('change', () => {
     const files = document.getElementById('upload').files;
-    uploadFiles(files, '/dev_root/test/', 'PUT')
+    uploadFiles(files, '/', 'PUT')
     .then((response) => {printResults(response, 'file(s) successfully uploaded', 0);})
     // add test that has directory that is above filesystem to get isDescendantOf error
     // the following tests save files to temporary directory and then doesn't move them - watch out
-    .then(() => uploadFiles(files, '/dev_root/../../', 'PUT'))
+    .then(() => uploadFiles(files, '/../../', 'PUT'))
     .then((response) => printResults(response, null, -1))
     // could use test to make rename not work - maybe incorrect dir
-    .then(() => uploadFiles(files, '/dev_root/this/doesnt/exist', 'PUT'))
+    .then(() => uploadFiles(files, '/this/doesnt/exist', 'PUT'))
     .then((response) => printResults(response, null, -2))
     .catch((error) => alert('problem with negatively numbered Upload Tests.\n' + error));
 });
 
 // test with incorrect method
-uploadFiles([], '/dev_root/test/', 'DELETE')
+uploadFiles([], '/', 'DELETE')
 .then((response) => printResults(response, 'method not allowed', 1))
 // add test with incorrect multipart/form-data body - will now get 'request body has incorrect format'
-.then(() => uploadFiles([], '/dev_root/test/', 'PUT', 'hello'))
+.then(() => uploadFiles([], '/', 'PUT', 'hello'))
 .then((response) => printResults(response, 'request body has incorrect format', 3))
 .catch((error) => alert('problem with positively numbered Upload Tests.\n' + error));

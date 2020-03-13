@@ -88,7 +88,7 @@ const genericTestWithHeaders = (method, devModule, headers, body, testName, expe
         }
 
         // devModule has no file extension
-        request.open(method, 'http://dev.localhost:8080/client-dev-interface/' + devModule);
+        request.open(method, 'http://localhost:8080/client-dev-interface/' + devModule);
         
         // handles a JavaScript object containing request header key-value pairs
         for (const header in headers) {
@@ -229,17 +229,17 @@ const deleteTest = async (filepath, isDir, testName, expectedResult) => {
 /**************************************** Tests ****************************************/
 
 /******************** Testing for Create Module ********************/
-createTest('/dev_root/test/hihi', true, 'Create Test -1', 'directory successfully created')
-.then(() => createTest('/dev_root/test/hihi/hello/', true, 'Create Test 0',
+createTest('/hihi', true, 'Create Test -1', 'directory successfully created')
+.then(() => createTest('/hihi/hello/', true, 'Create Test 0',
                         'directory successfully created'))
-.then(() => createTest('/dev_root/test/hihi/toDelete.txt', false, 'Create Test 1',
+.then(() => createTest('/hihi/toDelete.txt', false, 'Create Test 1',
                         'file successfully created'))
-.then(() => createTest('/dev_root/test/hihi/hello', true, 'Create Test 2',
+.then(() => createTest('/hihi/hello', true, 'Create Test 2',
                         'directory already exists in filesystem'))
-.then(() => createTest('/dev_root/test/hihi/toDelete.txt', false, 'Create Test 3',
+.then(() => createTest('/hihi/toDelete.txt', false, 'Create Test 3',
                         'file already exists in filesystem'))
 .then(() => genericTest('GET', 'create', {'Content-Type': 'application/json'},
-                        JSON.stringify({'Filepath' : '/dev_root/test/hihi/toDelete.txt',
+                        JSON.stringify({'Filepath' : '/hihi/toDelete.txt',
                                         'isDirectory' : false}),
                         'Create Test 4', 'method not allowed'))
 .then(() => genericTest('PUT', 'create', {'Content-Type': 'application/json'},
@@ -248,33 +248,33 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'directory successfull
 .then(() => genericTest('PUT', 'create', {'Content-Type': 'application/json'},
                         JSON.stringify({'isDirectory' : false}), 'Create Test 6',
                         'request body has incorrect content type/format'))
-.then(() => createTest('/dev_root/test/hihi/more', true, 'Create Test 7',
+.then(() => createTest('/hihi/more', true, 'Create Test 7',
                         'directory successfully created'))
-.then(() => createTest('/dev_root/test/hihi/hello/subhello', true, 'Create Test 8',
+.then(() => createTest('/hihi/hello/subhello', true, 'Create Test 8',
                         'directory successfully created'))
-.then(() => createTest('/dev_root/test/hihi/hello/helloChild2', true, 'Create Test 8a',
+.then(() => createTest('/hihi/hello/helloChild2', true, 'Create Test 8a',
                         'directory successfully created'))
-.then(() => createTest('/dev_root/test/hihi/hello/helloChild3', true, 'Create Test 8c',
+.then(() => createTest('/hihi/hello/helloChild3', true, 'Create Test 8c',
                         'directory successfully created'))
-.then(() => createTest('/dev_root/test/hihi/hello/index.html', false, 'Create Test 9',
+.then(() => createTest('/hihi/hello/index.html', false, 'Create Test 9',
                         'file successfully created'))
-.then(() => createTest('/dev_root/test/hihi/hello/styles.css', false, 'Create Test 10',
+.then(() => createTest('/hihi/hello/styles.css', false, 'Create Test 10',
                         'file successfully created'))
-.then(() => createTest('/dev_root/test/hihi/hello/script.js', false, 'Create Test 11',
+.then(() => createTest('/hihi/hello/script.js', false, 'Create Test 11',
                         'file successfully created'))
-.then(() => createTest('/dev_root/test/hihi/more/insideMore', true, 'Create Test 12',
+.then(() => createTest('/hihi/more/insideMore', true, 'Create Test 12',
                         'directory successfully created'))
-.then(() => createTest('/dev_root/test/hihi/more/moreFile', false, 'Create Test 13',
+.then(() => createTest('/hihi/more/moreFile', false, 'Create Test 13',
                         'file successfully created'))
-.then(() => createTest('/dev_root/test/hihi/toBeInsideMore', true, 'Create Test 14',
+.then(() => createTest('/hihi/toBeInsideMore', true, 'Create Test 14',
                         'directory successfully created'))
-.then(() => createTest('/dev_root/test/hihi/index.html', false, 'Create Test 15',
+.then(() => createTest('/hihi/index.html', false, 'Create Test 15',
                         'file successfully created'))
-.then(() => createTest('/dev_root/test/hihi/styles.css', false, 'Create Test 16',
+.then(() => createTest('/hihi/styles.css', false, 'Create Test 16',
                         'file successfully created'))
-.then(() => createTest('/dev_root/test/hihi/script.js', false, 'Create Test 17',
+.then(() => createTest('/hihi/script.js', false, 'Create Test 17',
                         'file successfully created'))
-.then(() => createTest('/dev_root/test/hihi/helloChild3', true, 'Create Test 18',
+.then(() => createTest('/hihi/helloChild3', true, 'Create Test 18',
                         'directory successfully created'))
 .then(() => createTest('/../gotcha.txt', false, 'Create Test 19',
                         'invalid filepath'))
@@ -282,171 +282,171 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'directory successfull
 .then(() => document.body.appendChild(document.createElement('br')))
 
 /******************** Testing for Move Module ********************/
-.then(() => moveTest('/dev_root/test/hihi/index.html', '/dev_root/test/hihi/toBeInsideMore/index.html',
+.then(() => moveTest('/hihi/index.html', '/hihi/toBeInsideMore/index.html',
         'Move Test 1', 'move successful'))
-.then(() => moveTest('/dev_root/test/hihi/toBeInsideMore', '/dev_root/test/hihi/more/toBeInsideMore',
+.then(() => moveTest('/hihi/toBeInsideMore', '/hihi/more/toBeInsideMore',
                     'Move Test 2', 'move successful'))
-.then(() => moveTest('/dev_root/test/hihi/toDelete.txt',
-                    '/dev_root/test/hihi/hello/helloChild2/toDelete.txt',
+.then(() => moveTest('/hihi/toDelete.txt',
+                    '/hihi/hello/helloChild2/toDelete.txt',
                     'Move Test 3', 'move successful'))
-.then(() => moveTest('/dev_root/test/hihi/script.js', '/dev_root/test/hihi/more/script.js',
+.then(() => moveTest('/hihi/script.js', '/hihi/more/script.js',
                     'Move Test 4', 'move successful'))
-.then(() => moveTest('/dev_root/test/hihi/hello/script.js', '/dev_root/test/hihi/script.js',
+.then(() => moveTest('/hihi/hello/script.js', '/hihi/script.js',
                     'Move Test 5', 'move successful'))
-.then(() => moveTest('/dev_root/test/hihi/hello/styles.css',
-                    '/dev_root/test/hihi/hello/subhello/styles.css',
+.then(() => moveTest('/hihi/hello/styles.css',
+                    '/hihi/hello/subhello/styles.css',
                     'Move Test 6', 'move successful'))
-.then(() => moveTest('/dev_root/test/hihi/hello/subhello', '/dev_root/test/hihi/more/subhello',
+.then(() => moveTest('/hihi/hello/subhello', '/hihi/more/subhello',
                     'Move Test 7', 'move successful'))
-.then(() => moveTest('/dev_root/test/hihi/styles.css', '/dev_root/test/hihi/more/subhello/styles.css',
+.then(() => moveTest('/hihi/styles.css', '/hihi/more/subhello/styles.css',
                     'Move Test 8', 'move successful'))
-.then(() => moveTest('/dev_root/test/hihi/hello/index.html',
-                    '/dev_root/test/hihi/more/toBeInsideMore/index.html',
+.then(() => moveTest('/hihi/hello/index.html',
+                    '/hihi/more/toBeInsideMore/index.html',
                     'Move Test 9', 'move successful'))
-.then(() => moveTest('/dev_root/test/hihi/helloChild3', '/dev_root/test/hihi/hello/helloChild3',
+.then(() => moveTest('/hihi/helloChild3', '/hihi/hello/helloChild3',
                     'Move Test 10', 'move successful'))
-.then(() => moveTest('/dev_root/test/hihi/hello/helloChild3', '/dev_root/test/hihi/more',
+.then(() => moveTest('/hihi/hello/helloChild3', '/hihi/more',
                     'Move Test 11', 'attempted move to existing nonempty directory'))
-.then(() => moveTest('/dev_root/test/hihi/goodbye', '/dev_root/test/hihi/goodday',
+.then(() => moveTest('/hihi/goodbye', '/hihi/goodday',
                     'Move Test 12', 'filesystem entry does not exist'))
-.then(() => moveTest('/dev_root/test/hihi/goodday.txt', '/dev_root/test/hihi/goodday.html',
+.then(() => moveTest('/hihi/goodday.txt', '/hihi/goodday.html',
                     'Move Test 13', 'filesystem entry does not exist'))
 .then(() => genericTest('POST', 'move', {'Content-Type': 'application/json'},
-                        {'oldPath': '/dev_root/test/hihi/hello', 'newPath': '/dev_root/test/hihi/hi'},
+                        {'oldPath': '/hihi/hello', 'newPath': '/hihi/hi'},
                         'Move Test 14', 'method not allowed'))
 .then(() => genericTest('PATCH', 'move', {'Content-Type': 'text/plain'}, 'hi', 'Move Test 15',
                         'request body could not be parsed as JSON'))
 .then(() => genericTest('PATCH', 'move', {'Content-Type': 'application/json'},
-                        JSON.stringify({'oldPath': '/dev_root/test/hihi/hello', 'nonewPath': 'hi'}),
+                        JSON.stringify({'oldPath': '/hihi/hello', 'nonewPath': 'hi'}),
                         'Move Test 16', 'request body has incorrect content type/format'))
-.then(() => moveTest('/../thisIsAboveRoot/hello/gday.html', '/dev_root/test/hihi/goodday.html',
+.then(() => moveTest('/../thisIsAboveRoot/hello/gday.html', '/hihi/goodday.html',
                         'Move Test 17', 'invalid filepath'))
-.then(() => moveTest('/dev_root/test/hihi/goodday.txt', '/dev_root/../../aboveRoot/test/hihi/goodday.html',
+.then(() => moveTest('/hihi/goodday.txt', '/../../aboveRoot/test/hihi/goodday.html',
                     'Move Test 18', 'invalid filepath'))
 .catch(error => alert('Something went wrong with move tests.'))
 .then(() => document.body.appendChild(document.createElement('br')))
 
 /******************** Testing for Dir-Snapshot Module ********************/
-.then(() => dirSnapshotTest('/dev_root/test/hihi/&RandoGarbage=37', 'DirSnapshot Test 1',
+.then(() => dirSnapshotTest('/hihi/&RandoGarbage=37', 'DirSnapshot Test 1',
                             JSON.stringify([{'name': 'hello', 'isDir': true},
                             {'name': 'more', 'isDir': true}, {'name': 'script.js', 'isDir': false}])))
-.then(() => dirSnapshotTest('/dev_root/test/hihi/hello/helloChild3', 'DirSnapshot Test 2',
+.then(() => dirSnapshotTest('/hihi/hello/helloChild3', 'DirSnapshot Test 2',
                             JSON.stringify([])))
-.then(() => dirSnapshotTest('/dev_root/test/hihi/more', 'DirSnapshot Test 3',
+.then(() => dirSnapshotTest('/hihi/more', 'DirSnapshot Test 3',
                             JSON.stringify([{'name': 'insideMore', 'isDir': true},
                             {'name': 'moreFile', 'isDir': false},
                             {'name': 'script.js', 'isDir': false}, {'name': 'subhello', 'isDir': true},
                             {'name': 'toBeInsideMore', 'isDir': true}])))
-.then(() => dirSnapshotTest('/dev_root/test/hihi/more/toBeInsideMore/', 'DirSnapshot Test 4',
+.then(() => dirSnapshotTest('/hihi/more/toBeInsideMore/', 'DirSnapshot Test 4',
                             JSON.stringify([{'name': 'index.html', 'isDir': false}])))
-.then(() => dirSnapshotTest('/dev_root/test/hihi/thisDontexist/', 'DirSnapshot Test 5',
+.then(() => dirSnapshotTest('/hihi/thisDontexist/', 'DirSnapshot Test 5',
                             'directory does not exist'))
-.then(() => dirSnapshotTest('/dev_root/test/hihi/script.js', 'DirSnapshot Test 6',
+.then(() => dirSnapshotTest('/hihi/script.js', 'DirSnapshot Test 6',
                             'filesystem entry is not a directory'))
 .then(() => genericTest('POST', 'dir-snapshot?Directory=', {}, '', 'DirSnapshot Test 7',
                         'method not allowed'))
-.then(() => genericTest('GET', 'dir-snapshot?Direcory=/dev_root/test/hihi/&RandoGarbage=37', {}, '',
+.then(() => genericTest('GET', 'dir-snapshot?Direcory=/hihi/&RandoGarbage=37', {}, '',
                         'DirSnapshot Test 8', 'incorrect querystring'))
 .then(() => dirSnapshotTest('/../thisIsAboveRoot/hi', 'DirSnapshot Test 9', 'invalid filepath'))
 .catch(error => alert('Something went wrong with dir-snapshot tests.'))
 .then(() => document.body.appendChild(document.createElement('br')))
 
 /******************** Testing for Save Module ********************/
-.then(() => saveTest('/dev_root/test/hihi/newFile.txt', 'hi', {'Content-Type': 'text/plain'},
+.then(() => saveTest('/hihi/newFile.txt', 'hi', {'Content-Type': 'text/plain'},
                     'Save Test 1', 'file successfully saved'))
-.then(() => saveTest('/dev_root/test/hihi/hello/helloChild3', 'bye', {'Content-Type': 'text/plain'},
+.then(() => saveTest('/hihi/hello/helloChild3', 'bye', {'Content-Type': 'text/plain'},
                     'Save Test 2', 'filesystem entry is a directory'))
-.then(() => genericTest('GET', 'save?Filepath=/dev_root/test/hihi/text.txt',
+.then(() => genericTest('GET', 'save?Filepath=/hihi/text.txt',
                         {'Content-Type': 'text/plain'}, 'hello', 'Save Test 3', 'method not allowed'))
-.then(() => genericTest('PUT', 'save?Filpath=/dev_root/test/hihi/text.txt', {'Content-Type': 'text/plain'},
+.then(() => genericTest('PUT', 'save?Filpath=/hihi/text.txt', {'Content-Type': 'text/plain'},
                         'hello', 'Save Test 4', 'incorrect querystring'))
 .then(() => saveTest('/../../WayAboveRoot/thisDoesntExist.txt', 'hi', {'Content-Type': 'text/plain'},
                     'Save Test 5', 'invalid filepath'))
-.then(() => saveTest('/dev_root/test/hihi/script.js', '//this is inner text of script.js', {'Content-Type': 'text/javascript'},
+.then(() => saveTest('/hihi/script.js', '//this is inner text of script.js', {'Content-Type': 'text/javascript'},
                     'Save Test 6', 'file successfully saved'))
-.then(() => saveTest('/dev_root/test/hihi/more/moreFile', 'this is inside moreFile\n wow', {'Content-Type': null},
+.then(() => saveTest('/hihi/more/moreFile', 'this is inside moreFile\n wow', {'Content-Type': null},
                     'Save Test 7', 'file successfully saved'))
-.then(() => saveTest('/dev_root/test/hihi/more/toBeInsideMore/index.html', '<!DOCTYPE html>', {'Content-Type': 'text/html'},
+.then(() => saveTest('/hihi/more/toBeInsideMore/index.html', '<!DOCTYPE html>', {'Content-Type': 'text/html'},
                     'Save Test 8', 'file successfully saved'))
 .catch(error => alert('Something went wrong with save tests.\n' + error))
 .then(() => document.body.appendChild(document.createElement('br')))
 
 /******************** Testing for Edit Module ********************/
-.then(() => editTest('/dev_root/test/hihi/hello/helloChild3', 'Edit Test 1',
+.then(() => editTest('/hihi/hello/helloChild3', 'Edit Test 1',
                     'filesystem entry is a directory', {}))
-.then(() => editTest('/dev_root/test/hihi/thisDoesntExist.txt', 'Edit Test 2',
+.then(() => editTest('/hihi/thisDoesntExist.txt', 'Edit Test 2',
                     'file does not exist', {}))
-.then(() => genericTest('POST', 'edit?Filepath=/dev_root/test/hihi/text.txt', {}, '',
+.then(() => genericTest('POST', 'edit?Filepath=/hihi/text.txt', {}, '',
                     'Edit Test 3', 'method not allowed'))
-.then(() => genericTest('GET', 'edit?Filpath=/dev_root/test/hihi/text.txt', {}, '',
+.then(() => genericTest('GET', 'edit?Filpath=/hihi/text.txt', {}, '',
                     'Edit Test 4', 'incorrect querystring'))
 .then(() => editTest('/../../WayAboveRoot/thisDoesntExist.txt', 'Edit Test 5',
                     'invalid filepath', {}))
-.then(() => editTest('/dev_root/test/hihi/script.js', 'Edit Test 6',
+.then(() => editTest('/hihi/script.js', 'Edit Test 6',
                         '//this is inner text of script.js', {'Content-Type': 'application/javascript'}))
-.then(() => editTest('/dev_root/test/hihi/more/moreFile', 'Edit Test 7',
+.then(() => editTest('/hihi/more/moreFile', 'Edit Test 7',
                         'this is inside moreFile\n wow', {'Content-Type': 'null'}))
-.then(() => editTest('/dev_root/test/hihi/more/toBeInsideMore/index.html', 'Edit Test 8',
+.then(() => editTest('/hihi/more/toBeInsideMore/index.html', 'Edit Test 8',
                         '<!DOCTYPE html>', {'Content-Type': 'text/html'}))
 .catch(error => alert('Something went wrong with edit tests.\n' + error))
 .then(() => document.body.appendChild(document.createElement('br')))
 
 /******************** Testing for Exists Module ********************/
-.then(() => genericTest('POST', 'exists?Filepath=/dev_root/test/hihi', {}, '', 'Exists Test 1',
+.then(() => genericTest('POST', 'exists?Filepath=/hihi', {}, '', 'Exists Test 1',
                         'method not allowed'))
-.then(() => genericTest('GET', 'exists?Fiepat=/dev_root/test/hihi', {}, '', 'Exists Test 2',
+.then(() => genericTest('GET', 'exists?Fiepat=/hihi', {}, '', 'Exists Test 2',
                         'incorrect querystring'))
-.then(() => existsTest('/dev_root/../above/../../root', 'Exists Test 3', 'invalid filepath'))
-.then(() => existsTest('/dev_root/test/hihi/script.js', 'Exists Test 4', 'filesystem entry exists'))
-.then(() => existsTest('/dev_root/test/hihi/nonExistent.txt', 'Exists Test 5',
+.then(() => existsTest('/../above/../../root', 'Exists Test 3', 'invalid filepath'))
+.then(() => existsTest('/hihi/script.js', 'Exists Test 4', 'filesystem entry exists'))
+.then(() => existsTest('/hihi/nonExistent.txt', 'Exists Test 5',
                         'filesystem entry does not exist'))
 .catch(error => alert('Something went wrong with exists tests.\n' + error))
 .then(() => document.body.appendChild(document.createElement('br')))
 
 /******************** Testing for Delete Module ********************/
-.then(() => deleteTest('/dev_root/test/hihi/newFile.txt', false, 'Delete Test -3',
+.then(() => deleteTest('/hihi/newFile.txt', false, 'Delete Test -3',
                         'file successfully deleted'))
-.then(() => deleteTest('/dev_root/test/hihi/hello/helloChild2/toDelete.txt', false, 'Delete Test -2',
+.then(() => deleteTest('/hihi/hello/helloChild2/toDelete.txt', false, 'Delete Test -2',
                         'file successfully deleted'))
-.then(() => deleteTest('/dev_root/test/hihi/hello/helloChild2', true, 'Delete Test -2b',
+.then(() => deleteTest('/hihi/hello/helloChild2', true, 'Delete Test -2b',
                         'directory successfully deleted'))
-.then(() => deleteTest('/dev_root/test/hihi/hello/helloChild3', true, 'Delete Test -2c',
+.then(() => deleteTest('/hihi/hello/helloChild3', true, 'Delete Test -2c',
                         'directory successfully deleted'))
-.then(() => deleteTest('/dev_root/test/hihi/more/insideMore', true, 'Delete Test -1',
+.then(() => deleteTest('/hihi/more/insideMore', true, 'Delete Test -1',
                         'directory successfully deleted'))
-.then(() => deleteTest('/dev_root/test/hihi/more/moreFile', false,
+.then(() => deleteTest('/hihi/more/moreFile', false,
                         'Delete Test -1b', 'file successfully deleted'))
-.then(() => deleteTest('/dev_root/test/hihi/more/script.js', false,
+.then(() => deleteTest('/hihi/more/script.js', false,
                         'Delete Test -1c', 'file successfully deleted'))
-.then(() => deleteTest('/dev_root/test/hihi/more/subhello/styles.css', false,
+.then(() => deleteTest('/hihi/more/subhello/styles.css', false,
                         'Delete Test -1d', 'file successfully deleted'))
-.then(() => deleteTest('/dev_root/test/hihi/more/subhello', true,
+.then(() => deleteTest('/hihi/more/subhello', true,
                         'Delete Test -1e', 'directory successfully deleted'))
-.then(() => deleteTest('/dev_root/test/hihi/more/toBeInsideMore/index.html', false,
+.then(() => deleteTest('/hihi/more/toBeInsideMore/index.html', false,
                         'Delete Test -1f', 'file successfully deleted'))
-.then(() => deleteTest('/dev_root/test/hihi/more/toBeInsideMore', true,
+.then(() => deleteTest('/hihi/more/toBeInsideMore', true,
                         'Delete Test -1h', 'directory successfully deleted'))
-.then(() => deleteTest('/dev_root/test/hihi/more', true, 'Delete Test -1',
+.then(() => deleteTest('/hihi/more', true, 'Delete Test -1',
                         'directory successfully deleted'))
-.then(() => deleteTest('/dev_root/test/hihi', true, 'Delete Test 0',
+.then(() => deleteTest('/hihi', true, 'Delete Test 0',
                         'directory not empty'))
-.then(() => deleteTest('/dev_root/test/hihi/script.js', true, 'Delete Test 1',
+.then(() => deleteTest('/hihi/script.js', true, 'Delete Test 1',
                         'directory could not be removed'))
-.then(() => deleteTest('/dev_root/test/hihi/hello/', false, 'Delete Test 2',
+.then(() => deleteTest('/hihi/hello/', false, 'Delete Test 2',
                         'file could not be removed'))
-.then(() => deleteTest('/dev_root/test/hihi/script.js', false, 'Delete Test 3',
+.then(() => deleteTest('/hihi/script.js', false, 'Delete Test 3',
                         'file successfully deleted'))
-.then(() => deleteTest('/dev_root/test/hihi/hello/', true, 'Delete Test 4',
+.then(() => deleteTest('/hihi/hello/', true, 'Delete Test 4',
                         'directory successfully deleted'))
-.then(() => deleteTest('/dev_root/test/hihi/hello', true, 'Delete Test 5',
+.then(() => deleteTest('/hihi/hello', true, 'Delete Test 5',
                         'system object does not exist'))
-.then(() => deleteTest('/dev_root/test/hihi/hello/', false, 'Delete Test 6',
+.then(() => deleteTest('/hihi/hello/', false, 'Delete Test 6',
                         'system object does not exist'))
 .then(() => genericTest('POST', 'delete', {'Content-Type': 'application/json'},
-                        JSON.stringify({'Filepath': '/dev_root/test/hihi/hello/',
+                        JSON.stringify({'Filepath': '/hihi/hello/',
                                         'isDirectory': true}), 'Delete Test 7', 'method not allowed'))
 .then(() => genericTest('DELETE', 'delete', {'Content-Type': 'application/json'},
-                        JSON.stringify({'Filepath': '/dev_root/test/hihi/toDelete.txt',
+                        JSON.stringify({'Filepath': '/hihi/toDelete.txt',
                                         'someOtherAttribute': -1}), 'Delete Test 8',
                         'request body has incorrect content type/format'))
 .then(() => genericTest('DELETE', 'delete', {'Content-Type': 'text/plain'},
@@ -455,7 +455,7 @@ createTest('/dev_root/test/hihi', true, 'Create Test -1', 'directory successfull
 .then(() => genericTest('DELETE', 'delete', {'Content-Type': 'application/json'},
                         'here is my request body', 'Delete Test 10',
                         'request body could not be parsed as JSON'))
-.then(() => deleteTest('/dev_root/test/hihi', true, 'Delete Test 11',
+.then(() => deleteTest('/hihi', true, 'Delete Test 11',
                         'directory successfully deleted'))
 .then(() => deleteTest('/../thisIsAboveRoot', true, 'Delete Test 12',
                         'invalid filepath'))
