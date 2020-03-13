@@ -10,8 +10,7 @@ const url = require('url');
 const fs = require('fs');
 const path = require('path');
 const mime = require('mime');
-
-const cdi = require('./client-dev-interface/client-dev-interface.js');
+const cdi = require('client-dev-interface');
 
 const devRoot = '/Users/drewwadsworth/Documents/Developer/dev_root';
 const siteRoot = '/Users/drewwadsworth/Documents/Developer/site_root';
