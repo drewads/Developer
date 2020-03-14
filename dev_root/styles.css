@@ -125,10 +125,11 @@ body {
     width: 100%;
     height: 460px;
     resize: none;
-    border: 1px solid #000000;
     font-family: 'Source Code Pro', monospace;
     outline: none;
+    border: none;
     white-space: nowrap; /* allows horizontal scroll*/
+    tab-size: 4;
 }
 
 #navigator {
@@ -145,7 +146,7 @@ body {
 #navWrapper {
     width: 100%;
     height: 464px;
-    border: 1px solid #000000;
+    border-left: 1px solid #000000;
     overflow: scroll;
 }
 

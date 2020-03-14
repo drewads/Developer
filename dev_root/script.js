@@ -1,9 +1,38 @@
+
+/*************************** Create Editor and Add Value to it **********************************/
+const editor = CodeMirror.fromTextArea(document.getElementById('editorTextArea'), {
+    lineNumbers: true
+});
+
+editor.setSize('100%', 460);
+
+
+const DONE_STATE = 4; // when the HTTP request is completely finished, including response
+
+const request = new XMLHttpRequest();   
+
+// when we get the entire HTTP response back from the server
+request.onreadystatechange = () => {
+    if (request.readyState === DONE_STATE) {
+        editor.setValue(request.response);
+        editor.setOption('mode', request.getResponseHeader('Content-Type'));
+    }
+}
+
+// devModule has no file extension
+request.open('GET', 'http://dev.localhost:8080/client-dev-interface/edit?Filepath=/dev_root/script.js');
+
+request.send();
+
+/*************************** Select SystemObjects function **********************************/
+
 let selectedObject = null; // maybe wanna use react to create something where onclick of system object,
                     // there is a component that handles everything and stores all the data
+                    // if i was gonna do this without react, i would make this a class
 
-let systemObjects = document.getElementsByClassName("systemObject");
+const systemObjects = document.getElementsByClassName("systemObject");
 
-for (let o of systemObjects) {
+for (const o of systemObjects) {
     o.addEventListener("click", () => {selectObject(o)});
 }
 
