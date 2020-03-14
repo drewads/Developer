@@ -36,16 +36,23 @@
                     </div>
                     <div id="manageFS">
                         <div id="manageFSButtons">
-                            <button id="create" class="UIButton topButton FSButton"
-                            title="Type a new directory or file name to be created in the working directory">
-                             create 
-                            </button>
+                            <div class="dropdown">
+                                <button id="create" class="UIButton topButton FSButton"
+                                title="Type a new directory or file name to be created in the working directory">
+                                create 
+                                </button>
+                                <div id="createDropdown" class="dropdownContent">
+                                <a id="createFile">File</a>
+                                <a id="createDir">Directory</a>
+                            </div>
+                            </div>
 
                             <button id="edit" class="UIButton topButton FSButton"
                             title="Select file from menu to edit in editor to left">
                             edit
                             </button>
 
+                            <input id="uploadInput" multiple type="file" hidden/>
                             <button id="upload" class="UIButton topButton FSButton"
                             title="Upload file from local filesystem">
                             upload
