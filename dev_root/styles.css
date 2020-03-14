@@ -11,6 +11,7 @@ body {
 
 #header {
     margin-bottom: 8px;
+    height: 15vh;
 }
 
 #logo {
@@ -81,6 +82,18 @@ body {
     float: left;
 }
 
+#moveFrom {
+    display: none;
+}
+
+#generalInput {
+    width: 100%;
+}
+
+.moveElems {
+    visibility: hidden;
+}
+
 .manageFSForm {
     display: block;
     outline: none;
@@ -103,17 +116,23 @@ body {
 }
 
 #moveToInput {
-    width: 81%;
-    float: left;
+    width: calc(87% - 16px);
+    display: inline-block;
 }
 
 #move {
-    float: right;
+    width: 14%;
+    display: inline-block;
+}
+
+#edNav {
+    height: 75vh;
 }
 
 #editor {
     width: var(--editor-width);
     float: left;
+    height: 100%;
 }
 
 #editorPath {
@@ -123,7 +142,7 @@ body {
 
 #editor textarea {
     width: 100%;
-    height: 460px;
+    height: 100%; /* was 460 px */
     resize: none;
     font-family: 'Source Code Pro', monospace;
     outline: none;
@@ -135,6 +154,7 @@ body {
 #navigator {
     width: var(--navigator-width);
     float: right;
+    height: 100%;
 }
 
 #navigatorPath {
@@ -145,7 +165,7 @@ body {
 
 #navWrapper {
     width: 100%;
-    height: 464px;
+    height: 100%;
     border-left: 1px solid #000000;
     overflow: scroll;
 }

@@ -1,15 +1,38 @@
+/*************************** Move/Rename Elements Toggling **********************************/
+let move_rename_engaged = false;
+
+for (const button of document.getElementsByClassName('FSButton')) {
+    button.addEventListener('click', event => {
+        event.preventDefault();
+        if (move_rename_engaged) {
+            for (const elem of document.getElementsByClassName('moveElems')) {
+                elem.style.visibility = 'hidden';
+            }
+            document.getElementById('moveFrom').style.display = 'none';
+            document.getElementById('generalInput').style.width = '100%';
+            move_rename_engaged = false;
+        } else if (button.id === 'move_rename') {
+            for (const elem of document.getElementsByClassName('moveElems')) {
+                elem.style.visibility = 'visible';
+            }
+            document.getElementById('moveFrom').style.display = 'block';
+            document.getElementById('generalInput').style.width = '90%';
+            move_rename_engaged = true;
+        }
+    });
+}
 
 /*************************** Create Editor and Add Value to it **********************************/
 const editor = CodeMirror.fromTextArea(document.getElementById('editorTextArea'), {
     lineNumbers: true
 });
 
-editor.setSize('100%', 460);
+editor.setSize('100%', '100%');
 
 
 const DONE_STATE = 4; // when the HTTP request is completely finished, including response
 
-const request = new XMLHttpRequest();   
+const request = new XMLHttpRequest();
 
 // when we get the entire HTTP response back from the server
 request.onreadystatechange = () => {

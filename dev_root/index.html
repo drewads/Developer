@@ -36,48 +36,48 @@
                     </div>
                     <div id="manageFS">
                         <div id="manageFSButtons">
-                            <button id="create" class="UIButton topButton"
+                            <button id="create" class="UIButton topButton FSButton"
                             title="Type a new directory or file name to be created in the working directory">
                              create 
                             </button>
 
-                            <button id="edit" class="UIButton topButton"
+                            <button id="edit" class="UIButton topButton FSButton"
                             title="Select file from menu to edit in editor to left">
                             edit
                             </button>
 
-                            <button id="upload" class="UIButton topButton"
+                            <button id="upload" class="UIButton topButton FSButton"
                             title="Upload file from local filesystem">
                             upload
                             </button>
 
-                            <button id="move_rename" class="UIButton topButton"
+                            <button id="move_rename" class="UIButton topButton FSButton"
                             title="Select directory or file from menu to rename or move">
                             move/rename
                             </button>
 
-                            <button id="delete" class="UIButton topButton"
+                            <button id="delete" class="UIButton topButton FSButton"
                             title="Select directory or file from menu to delete">
                             delete
                             </button>
                         </div>
                         <form>
                             <div id="moveRenameFormFromWrapper" class="moveRenameFormWrapper">
-                                <div id="moveFrom" class="fromTo"> From: </div>
-                                <div class="manageFSFormInterface">
+                                <div id="moveFrom" class="fromTo moveElems"> From: </div>
+                                <div id="generalInput" class="manageFSFormInterface">
                                     <input id="manageFSForm" class="manageFSForm" autocomplete="off">
                                         
                                     </input>
                                 </div>
                             </div>
                             <div class="clear"></div>
-                            <div id="moveRenameFormToWrapper" class="moveRenameFormWrapper">
+                            <div id="moveRenameFormToWrapper" class="moveRenameFormWrapper moveElems">
                                 <div id="moveTo" class="fromTo"> To: </div>
                                 <div class="manageFSFormInterface">
                                     <input id="moveToInput" class="manageFSForm" autocomplete="off">
 
                                     </input>
-                                    <button id="move" class="UIButton"> move </button>
+                                    <button id="move" class="UIButton FSButton"> move </button>
                                 </div>
                             </div>
                         </form>
