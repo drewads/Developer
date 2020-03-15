@@ -181,6 +181,12 @@ const deleteClicked = (event) => {
     }
 }
 
+const moveClicked = (event) => {
+    event.preventDefault();
+
+    disengageMoveRename();
+}
+
 document.getElementById('create').addEventListener('click', event => createClicked(event));
 document.getElementById('edit').addEventListener('click', event => editClicked(event));
 document.getElementById('upload').addEventListener('click', event => uploadClicked(event));
@@ -188,6 +194,7 @@ document.getElementById('move_rename').addEventListener('click', event => moveRe
 document.getElementById('delete').addEventListener('click', event => deleteClicked(event));
 document.getElementById('createFile').addEventListener('click', event => createFileClicked(event));
 document.getElementById('createDir').addEventListener('click', event => createDirClicked(event));
+document.getElementById('move').addEventListener('click', event => moveClicked(event));
 
 /*************************** Create Editor and Add Value to it **********************************/
 const editor = CodeMirror.fromTextArea(document.getElementById('editorTextArea'), {
