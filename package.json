@@ -1,0 +1,44 @@
+{
+  "name": "developer",
+  "version": "1.0.0",
+  "description": "Web development environment allowing full access to files on the server from a browser.",
+  "main": "server.js",
+  "dependencies": {
+    "@babel/core": "^7.8.7",
+    "@babel/node": "^7.8.7",
+    "@babel/preset-env": "^7.8.7",
+    "@babel/preset-react": "^7.8.3",
+    "babel-loader": "^8.0.6",
+    "client-dev-interface": "^1.0.1",
+    "express": "^4.17.1",
+    "formidable": "^1.2.2",
+    "mime": "^2.4.4",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0",
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "^2.5.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev-server": "babel-node server.js",
+    "dev-bundle": "webpack -w -d",
+    "prod-bundle": "webpack -p"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drewads/Developer.git"
+  },
+  "author": "Drew Wadsworth",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/drewads/Developer/issues"
+  },
+  "homepage": "https://github.com/drewads/Developer#readme"
+}
