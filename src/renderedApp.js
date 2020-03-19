@@ -10,7 +10,9 @@ export default ReactDOMServer.renderToString(
             </title>
         </head>
         <body>
-            <App />
+            <div id='root'>
+                <App />
+            </div>
             <script src='main.js'></script>
         </body>
     </html>

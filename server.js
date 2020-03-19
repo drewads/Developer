@@ -1,12 +1,16 @@
 import express from 'express';
 import cdi from 'client-dev-interface';
 import renderedApp from './src/renderedApp';
+import http from 'http';
 
 const server = express();
+const PORT = 8080;
 
 const devURLRegex = /^\/client-dev-interface/;
 const devSubDomRegex = /^dev\./;
 const acceptedMethods = ['GET'];
+
+http.createServer(server).listen(PORT, () => {console.log(`server listening on port ${PORT}`)});
 
 server.use((req, res, next) => {
     if (devSubDomRegex.test(req.get('host'))) {
