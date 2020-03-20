@@ -1,6 +1,5 @@
 import express from 'express';
 import cdi from 'client-dev-interface';
-import renderedApp from './src/renderedApp';
 import http from 'http';
 
 const server = express();
@@ -10,7 +9,9 @@ const devURLRegex = /^\/client-dev-interface/;
 const devSubDomRegex = /^dev\./;
 const acceptedMethods = ['GET'];
 
-http.createServer(server).listen(PORT, () => {console.log(`server listening on port ${PORT}`)});
+http.createServer(server).listen(PORT, () => {
+    console.log(`\x1b[36m[Developer] server listening on port ${PORT}\x1b[0m`)
+});
 
 server.use((req, res, next) => {
     if (devSubDomRegex.test(req.get('host'))) {
@@ -35,10 +36,6 @@ server.all(devURLRegex, async (req, res) => {
         res.header(error.responseHeaders);
         res.send(error.message);
     }
-});
-
-server.get('/', (req, res) => {
-    res.send(renderedApp);
 });
 
 const commaDelimStr = (strArray) => {

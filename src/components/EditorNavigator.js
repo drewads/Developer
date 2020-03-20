@@ -5,13 +5,14 @@ import Navigator from './Navigator';
 class EditorNavigator extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {};
     }
 
     render() {
         return (
-            <div>
+            <div className='edNav'>
                 <Editor path='/main/sub/subsub/file.html' value=''/>
-                <Navigator path='/main/sub/subsub'/>
+                <Navigator />
             </div>
         );
     }

@@ -1,15 +1,30 @@
 :root {
     --editor-width: 57%;
     --navigator-width: calc(100% - var(--editor-width) - 1%);
+
+    --body-margin: 8px;
+    --header-height: 10vh;
+    --edNav-height: calc(100vh - var(--header-height) - 2 * var(--body-margin));
+
+    --navButtons-height: 1.5vw;
+    --navWrapper-height: calc(100% - var(--navButtons-height));
+
+    --topButton-marginY: .4em;
+    --topButton-paddingY: .25em;
+    --topButton-border: 1px;
+    --UIButton-font-size: 1vw;
+    --UIButton-height: calc(var(--UIButton-font-size) + 1.5vw);
+    --saveButton-height: calc(var(--topButton-marginY) + var(--topButton-paddingY) + var(--topButton-border) + var(--UIButton-height));
+    --editorTextArea-height: calc(100% - var(--saveButton-height));
 }
 
 body {
     font-family: 'system-ui', 'Arial', sans-serif;
+    margin: var(--body-margin);
 }
 
 #header {
-    margin-bottom: 8px;
-    height: 10vh;
+    height: var(--header-height);
 }
 
 #logo {
@@ -21,16 +36,17 @@ body {
     background-color: transparent;
     border-color: gray;
     border-radius: .5em;
-    font-size: 1vw;
+    font-size: var(--UIButton-font-size);
     font-family: 'system-ui', 'Arial', sans-serif;
     outline: none;
 }
 
 .topButton {
-    margin-top: .4em;
-    margin-bottom: .4em;
-    padding-top: .25em;
-    padding-bottom: .25em;
+    margin-top: var(--topButton-marginY);
+    margin-bottom: var(--topButton-marginY);
+    padding-top: var(--topButton-paddingY);
+    padding-bottom: var(--topButton-paddingY);
+    border-width: var(--topButton-border);
 }
 
 .UIButton:hover {
@@ -144,6 +160,11 @@ body {
     height: 75vh;
 }
 */
+.edNav {
+    height: var(--edNav-height);
+    clear: both;
+}
+
 .editor {
     width: var(--editor-width);
     float: left;
@@ -161,7 +182,7 @@ body {
 
 .editorTextArea {
     width: 100%;
-    height: 100%; /* was 460 px */
+    height: var(--editorTextArea-height); /* was 460 px */
     resize: none;
     font-family: 'Source Code Pro', monospace;
     outline: none;
@@ -178,7 +199,7 @@ body {
 }
 
 .navButtons {
-    height: 1.5vw;
+    height: var(--navButtons-height);
     float: left;
     margin-left: 1vw;
 }
@@ -191,7 +212,7 @@ body {
 
 .navWrapper {
     width: 100%;
-    height: 100%;
+    height: var(--navWrapper-height);
     overflow: scroll;
 }
 
@@ -215,8 +236,4 @@ body {
 .systemObjectLabel {
     font-size: .8vw;/*12px;*/
     overflow-wrap: break-word;
-}
-
-.clear {
-    clear: both;
 }
