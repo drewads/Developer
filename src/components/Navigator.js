@@ -1,25 +1,42 @@
 import React from 'react';
 
-function SystemObject(props) {
+class SystemObject extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {highlighted: false};
+
+        this.highlightObject = this.highlightObject.bind(this);
+    }
+
     // write an onclick for label
     // write an onclick for img potentially
     // write an ondoubleclick for the whole thing
-    const icon = './icons/' + (props.isDir ? 'GenericFolderIcon.png' : 'GenericDocumentIcon.png');
 
-    return (
-        <div className="systemObject">
-            <img src={icon}></img>
-            <div className="systemObjectLabel">
-                {props.label}
+    getIcon(isDir) {
+        return ('./icons/' + (isDir ? 'GenericFolderIcon.png' : 'GenericDocumentIcon.png'));
+    }
+
+    highlightObject() {
+        this.setState({highlighted: true});
+    }
+
+    render () {
+        return (
+            <div className={'systemObject' + (this.state.highlighted ? ' highlightedSystemObject' : '')}
+            onClick={this.highlightObject}>
+                <img src={this.getIcon(this.props.isDir)}></img>
+                <div className="systemObjectLabel">
+                    {this.props.label}
+                </div>
             </div>
-        </div>
-    );
+        );
+    }
 }
 
 class Navigator extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {path: '/', systemObjects: []};
+        this.state = {path: '/', systemObjects: [], highlightedObject: null};
     }
 
     sortSystemObjects(systemObjects) {

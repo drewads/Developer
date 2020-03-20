@@ -236,3 +236,7 @@ body {
     font-size: .8vw;/*12px;*/
     overflow-wrap: break-word;
 }
+
+.highlightedSystemObject {
+    background-color: #b0d6f5;
+}
