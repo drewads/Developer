@@ -1,9 +1,12 @@
 import React from 'react';
+import Header from './Header';
+import EditorNavigator from './EditorNavigator';
 
 function App() {
     return (
         <div>
-            Hello
+            <Header />
+            <EditorNavigator />
         </div>
     );
 }

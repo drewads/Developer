@@ -8,6 +8,7 @@ export default ReactDOMServer.renderToString(
             <title>
                 Developer
             </title>
+            <link rel="stylesheet" href="./styles.css"></link>
         </head>
         <body>
             <div id='root'>
