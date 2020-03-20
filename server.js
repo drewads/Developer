@@ -1,6 +1,7 @@
 import express from 'express';
 import cdi from 'client-dev-interface';
 import http from 'http';
+import renderedApp from './src/renderedApp';
 
 const server = express();
 const PORT = 8080;
@@ -36,6 +37,10 @@ server.all(devURLRegex, async (req, res) => {
         res.header(error.responseHeaders);
         res.send(error.message);
     }
+});
+
+server.get('/', (req, res) => {
+    res.send(renderedApp);
 });
 
 const commaDelimStr = (strArray) => {
