@@ -9,12 +9,11 @@
     --navButtons-height: 1.5vw;
     --navWrapper-height: calc(100% - var(--navButtons-height));
 
-    --topButton-marginY: .4em;
     --topButton-paddingY: .25em;
     --topButton-border: 1px;
     --UIButton-font-size: 1vw;
-    --UIButton-height: calc(var(--UIButton-font-size) + 1.5vw);
-    --saveButton-height: calc(var(--topButton-marginY) + var(--topButton-paddingY) + var(--topButton-border) + var(--UIButton-height));
+    --UIButton-height: calc(var(--UIButton-font-size) + 1vw);
+    --saveButton-height: calc(2 * (var(--topButton-paddingY) + var(--topButton-border)) + var(--UIButton-height));
     --editorTextArea-height: calc(100% - var(--saveButton-height));
 }
 
@@ -42,8 +41,7 @@ body {
 }
 
 .topButton {
-    margin-top: var(--topButton-marginY);
-    margin-bottom: var(--topButton-marginY);
+    margin-bottom: .1em;
     padding-top: var(--topButton-paddingY);
     padding-bottom: var(--topButton-paddingY);
     border-width: var(--topButton-border);
@@ -178,6 +176,7 @@ body {
 .editorPath {
     text-align: center;
     font-size: 1vw;
+    margin-top: calc(2 * (var(--topButton-paddingY) + var(--topButton-border)));
 }
 
 .editorTextArea {
