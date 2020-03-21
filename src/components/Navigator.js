@@ -1,42 +1,13 @@
 import React from 'react';
-
-class SystemObject extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {highlighted: false};
-
-        this.highlightObject = this.highlightObject.bind(this);
-    }
-
-    // write an onclick for label
-    // write an onclick for img potentially
-    // write an ondoubleclick for the whole thing
-
-    getIcon(isDir) {
-        return ('./icons/' + (isDir ? 'GenericFolderIcon.png' : 'GenericDocumentIcon.png'));
-    }
-
-    highlightObject() {
-        this.setState({highlighted: true});
-    }
-
-    render () {
-        return (
-            <div className={'systemObject' + (this.state.highlighted ? ' highlightedSystemObject' : '')}
-            onClick={this.highlightObject}>
-                <img src={this.getIcon(this.props.isDir)}></img>
-                <div className="systemObjectLabel">
-                    {this.props.label}
-                </div>
-            </div>
-        );
-    }
-}
+import SystemObject from './SystemObject';
 
 class Navigator extends React.Component {
     constructor(props) {
         super(props);
         this.state = {path: '/', systemObjects: [], highlightedObject: null};
+
+        this.objectClicked = this.objectClicked.bind(this);
+        this.navWindowClicked = this.navWindowClicked.bind(this);
     }
 
     sortSystemObjects(systemObjects) {
@@ -69,18 +40,33 @@ class Navigator extends React.Component {
             request.send();
     }
 
+    componentDidMount() {
+        this.getDirContents(this.state.path);
+    }
+
+    objectClicked(objProps) {
+        this.setState({highlightedObject: objProps.label});
+    }
+
+    navWindowClicked() {
+        this.setState({highlightedObject: null});
+    }
+
+    objectRenamed() {
+        this.getDirContents(this.state.path);
+    }
+
     fillViewer(elements) {
         const systemObjects = [];
 
         for (const element of elements) {
-            systemObjects.push(<SystemObject key={element['name']} label={element['name']} isDir={element['isDir']}/>);
+            systemObjects.push(<SystemObject key={this.state.path + element['name']}
+                                    label={element['name']} isDir={element['isDir']}
+                                    highlighted={element['name'] === this.state.highlightedObject}
+                                    click={this.objectClicked} renamed={this.objectRenamed}/>);
         }
 
         return systemObjects;
-    }
-
-    componentDidMount() {
-        this.getDirContents(this.state.path);
     }
 
     render() {
@@ -90,7 +76,7 @@ class Navigator extends React.Component {
                 <div className="navigatorPath">
                     {this.state.path}
                 </div>
-                <div className="navWrapper">
+                <div className="navWrapper" onClick={this.navWindowClicked}>
                     <div className="navViewer">
                         {this.fillViewer(this.state.systemObjects)}
                     </div>

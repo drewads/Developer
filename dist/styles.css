@@ -235,6 +235,13 @@ body {
 .systemObjectLabel {
     font-size: .8vw;/*12px;*/
     overflow-wrap: break-word;
+    cursor: default;
+}
+
+.editObjectLabel {
+    font-size: .8vw;/*12px;*/
+    width: 100%;
+    text-align: center;
 }
 
 .highlightedSystemObject {
