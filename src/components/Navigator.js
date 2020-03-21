@@ -8,6 +8,8 @@ class Navigator extends React.Component {
 
         this.objectClicked = this.objectClicked.bind(this);
         this.navWindowClicked = this.navWindowClicked.bind(this);
+        this.objectRenamed = this.objectRenamed.bind(this);
+        this.objectDoubleClicked = this.objectDoubleClicked.bind(this);
     }
 
     sortSystemObjects(systemObjects) {
@@ -22,22 +24,22 @@ class Navigator extends React.Component {
     }
 
     getDirContents(dirPath) {
-            const request = new XMLHttpRequest();
-            const DONE_STATE = 4;
+        const request = new XMLHttpRequest();
+        const DONE_STATE = 4;
 
-            request.onreadystatechange = () => {
-                if (request.readyState === DONE_STATE) {
-                    if (request.status === 200) {
-                        this.setState({path: '/', systemObjects: this.sortSystemObjects(JSON.parse(request.response))});
-                    } else {
-                        alert(request.response);
-                    }
+        request.onreadystatechange = () => {
+            if (request.readyState === DONE_STATE) {
+                if (request.status === 200) {
+                    this.setState({path: dirPath, systemObjects: this.sortSystemObjects(JSON.parse(request.response))});
+                } else {
+                    alert(request.response);
                 }
             }
+        }
 
-            request.open('GET', 'http://dev.localhost:8080/client-dev-interface/dir-snapshot?Directory=' + dirPath);
+        request.open('GET', `${window.location.protocol}//${window.location.host}/client-dev-interface/dir-snapshot?Directory=${dirPath}`);
 
-            request.send();
+        request.send();
     }
 
     componentDidMount() {
@@ -56,12 +58,25 @@ class Navigator extends React.Component {
         this.getDirContents(this.state.path);
     }
 
+    objectDoubleClicked(objectName, isDir) {
+        if (isDir) {
+            this.getDirContents(this.state.path + objectName + '/');
+        }
+    }
+
     fillViewer(elements) {
-        const systemObjects = [];
+        const systemObjects = [<SystemObject key={this.state.path + '..'}
+                                label={'..'} isDir={true}
+                                parentDir={this.state.path}
+                                doubleClick={this.objectDoubleClicked}
+                                highlighted={'..' === this.state.highlightedObject}
+                                click={this.objectClicked} renamed={this.objectRenamed}/>];
 
         for (const element of elements) {
             systemObjects.push(<SystemObject key={this.state.path + element['name']}
                                     label={element['name']} isDir={element['isDir']}
+                                    parentDir={this.state.path}
+                                    doubleClick={this.objectDoubleClicked}
                                     highlighted={element['name'] === this.state.highlightedObject}
                                     click={this.objectClicked} renamed={this.objectRenamed}/>);
         }

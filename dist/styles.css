@@ -242,6 +242,7 @@ body {
     font-size: .8vw;/*12px;*/
     width: 100%;
     text-align: center;
+    border: none;
 }
 
 .highlightedSystemObject {

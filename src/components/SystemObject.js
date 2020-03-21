@@ -10,10 +10,8 @@ class SystemObject extends React.Component {
         this.labelClicked = this.labelClicked.bind(this);
         this.getLabel = this.getLabel.bind(this);
         this.labelChanged = this.labelChanged.bind(this);
-    }
-
-    static getDerivedStateFromProps(newProps, prevState) {
-        return (prevState.labelEditable && !newProps.highlighted ? {labelEditable: false} : null);
+        this.renameObject = this.renameObject.bind(this);
+        this.objectDoubleClicked = this.objectDoubleClicked.bind(this);
     }
 
     // write an onclick for label
@@ -31,23 +29,48 @@ class SystemObject extends React.Component {
         }
     }
 
+    objectDoubleClicked() {
+        this.props.doubleClick(this.props.label, this.props.isDir);
+    }
+
     labelClicked() {
         if (this.props.highlighted) {
             this.setState({labelEditable: true});
         }
     }
 
+    renameObject(newName) {
+        const request = new XMLHttpRequest();
+        const DONE_STATE = 4;
+
+        request.onreadystatechange = () => {
+            if (request.readyState === DONE_STATE) {
+                if (request.status === 200) {
+                    this.props.renamed();
+                } else {
+                    alert(request.response);
+                }
+            }
+        }
+
+        request.open('PATCH', `${window.location.protocol}//${window.location.host}/client-dev-interface/move`);
+        request.setRequestHeader('Content-Type', 'application/json');
+        const body = {'oldPath': this.props.parentDir + this.props.label, 'newPath': this.props.parentDir + newName};
+        request.send(JSON.stringify(body));
+    }
+
     labelChanged(event) {
         this.setState({labelEditable: false});
-        // http request with move
-        // then if successful call this.props.renamed
-        console.log(event.target.value);
+
+        if (event.target.value !== this.props.label) {
+            this.renameObject(event.target.value);
+        }
     }
 
     getLabel(editable) {
         if (editable) {
             return (
-                <input type='text' className='editObjectLabel' defaultValue={this.props.label}
+                <input autoFocus type='text' className='editObjectLabel' defaultValue={this.props.label}
                     onBlur={this.labelChanged}></input>
             );
         } else {
@@ -63,7 +86,7 @@ class SystemObject extends React.Component {
         return (
             <div className={'systemObject' + (this.props.highlighted ? ' highlightedSystemObject' : '')}
             onClick={this.objectClicked}>
-                <img src={this.getIcon(this.props.isDir)}></img>
+                <img src={this.getIcon(this.props.isDir)} onDoubleClick={this.objectDoubleClicked}></img>
                 {this.getLabel(this.state.labelEditable)}
             </div>
         );
