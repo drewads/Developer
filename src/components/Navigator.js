@@ -1,5 +1,8 @@
 import React from 'react';
 import SystemObject from './SystemObject';
+import util from './util';
+
+const parentLabel = '..';
 
 class Navigator extends React.Component {
     constructor(props) {
@@ -28,24 +31,13 @@ class Navigator extends React.Component {
         return dirs.concat(files);
     }
 
-    static getDirContents = (dirPath) => {
-        return new Promise((resolve, reject) => {
-            const request = new XMLHttpRequest();
-            const DONE_STATE = 4;
-
-            request.onreadystatechange = () => {
-                if (request.readyState === DONE_STATE) {
-                    if (request.status === 200) {
-                        resolve(Navigator.sortSystemObjects(JSON.parse(request.response)));
-                    } else {
-                        reject(request.response);
-                    }
-                }
-            }
-
-            request.open('GET', `${window.location.protocol}//${window.location.host}/client-dev-interface/dir-snapshot?Directory=${dirPath}`);
-            request.send();
-        });
+    static getDirContents = async (dirPath) => {
+        try {
+            const response = await util.makeCDIRequest('GET', `dir-snapshot?Directory=${dirPath}`, {}, '');
+            return Navigator.sortSystemObjects(JSON.parse(response));
+        } catch (error) {
+            throw error;
+        }
     }
 
     componentDidMount = async () => {
@@ -83,7 +75,7 @@ class Navigator extends React.Component {
     }
 
     objectDoubleClicked = async (objectName, isDir) => {
-        if (objectName === '..') {
+        if (objectName === parentLabel) {
             this.moveToDirectory(this.state.path.slice(0, -1));
         }
         else if (isDir) {
@@ -91,22 +83,25 @@ class Navigator extends React.Component {
         }
     }
 
-    // this must change with a change to systemobject
+    createSystemObject = (name, isDir) => {
+        return (
+            <SystemObject key={Navigator.getPath(this.state.path) + name}
+                            label={name}
+                            isDir={isDir}
+                            isPathToParent={name === parentLabel}
+                            isHighlighted={name === this.state.highlightedObject}
+                            parentDir={Navigator.getPath(this.state.path)}
+                            doubleClick={this.objectDoubleClicked}
+                            click={this.objectClicked}
+                            renamed={this.objectRenamed}/>
+        );
+    }
+
     fillViewer = (elements) => {
-        const systemObjects = (this.state.path.length !== 0 ? [<SystemObject key={Navigator.getPath(this.state.path) + '..'}
-                                label={'..'} isDir={true}
-                                parentDir={Navigator.getPath(this.state.path)}
-                                doubleClick={this.objectDoubleClicked}
-                                highlighted={'..' === this.state.highlightedObject}
-                                click={this.objectClicked} renamed={this.objectRenamed}/>] : []);
+        const systemObjects = (this.state.path.length !== 0 ? [this.createSystemObject(parentLabel, true)] : []);
 
         for (const element of elements) {
-            systemObjects.push(<SystemObject key={Navigator.getPath(this.state.path) + element['name']}
-                                    label={element['name']} isDir={element['isDir']}
-                                    parentDir={Navigator.getPath(this.state.path)}
-                                    doubleClick={this.objectDoubleClicked}
-                                    highlighted={element['name'] === this.state.highlightedObject}
-                                    click={this.objectClicked} renamed={this.objectRenamed}/>);
+            systemObjects.push(this.createSystemObject(element['name'], element['isDir']));
         }
 
         return systemObjects;
