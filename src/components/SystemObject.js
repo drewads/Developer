@@ -8,8 +8,9 @@ function SystemObject(props) {
 
     const objectClicked = (event) => {
         event.stopPropagation();
+
         if (!props.isHighlighted) {
-            props.click(props);
+            props.highlight(props.label);
         }
     }
 
@@ -17,10 +18,42 @@ function SystemObject(props) {
         props.doubleClick(props.label, props.isDir);
     }
 
+    const dragHandler = () => {
+        props.dragged(props.label);
+    }
+
+    const dragEnter = (event) => {
+        event.preventDefault();
+
+        if (props.isDir) {
+            props.highlight(props.label);
+        }
+    }
+
+    const dragLeave = (event) => {
+        event.preventDefault();
+
+        props.unhighlight(props.label);
+    }
+
+    const dragOver = (event) => {
+        event.preventDefault();
+    }
+
+    const dropHandler = (event) => {
+        event.preventDefault();
+
+        if (props.isDir) {
+            props.dropped(props.label);
+        }
+    }
+
     return (
         <div className={'systemObject' + (props.isHighlighted ? ' highlightedSystemObject' : '')}
-            onClick={objectClicked}>
-            <img src={getIcon(props.isDir)} onDoubleClick={objectDoubleClicked}></img>
+            onClick={objectClicked} draggable={true} onDragStart={dragHandler}>
+            <img src={getIcon(props.isDir)} onDoubleClick={objectDoubleClicked} draggable={false}
+                onDragEnter={dragEnter} onDragLeave={dragLeave} onDrop={dropHandler}
+                onDragOver={dragOver}></img>
             <SystemObjectLabel label={props.label} isHighlighted={props.isHighlighted}
                                 parentDir={props.parentDir} renamed={props.renamed}
                                 isPathToParent={props.isPathToParent}/>

@@ -7,7 +7,7 @@ const parentLabel = '..';
 class Navigator extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {path: [], systemObjects: [], highlightedObject: null};
+        this.state = {path: [], systemObjects: [], highlightedObject: null, dragged: null};
     }
 
     static getPath = (pathArray) => {
@@ -48,12 +48,18 @@ class Navigator extends React.Component {
         }
     }
 
-    objectClicked = (objProps) => {
-        this.setState({highlightedObject: objProps.label});
+    highlightObject = (objectName) => {
+        this.setState({highlightedObject: objectName});
+    }
+
+    unhighlightObject = (objectName) => {
+        if (objectName === this.state.highlightedObject) {
+            this.setState({highlightedObject: null});
+        }
     }
 
     navWindowClicked = () => {
-        this.setState({highlightedObject: null});
+        this.setState({highlightedObject: null, dragged: null});
     }
 
     objectRenamed = async () => {
@@ -68,7 +74,7 @@ class Navigator extends React.Component {
         try {
             this.setState({path: pathArray,
                 systemObjects: await Navigator.getDirContents(Navigator.getPath(pathArray)),
-                highlightedObject: null});
+                highlightedObject: null, dragged: null});
         } catch (error) {
             alert(error);
         }
@@ -83,6 +89,20 @@ class Navigator extends React.Component {
         }
     }
 
+    objectDragged = (objectName) => {
+        if (this.state.dragged !== objectName) {
+            this.setState({dragged: objectName});
+        }
+    }
+
+    objectDropped = (droppedOnto) => {
+        if (this.state.dragged !== droppedOnto) {
+            console.log(this.state.dragged + ' dropped onto ' + droppedOnto);
+            // move
+            // getDir
+        }
+    }
+
     createSystemObject = (name, isDir) => {
         return (
             <SystemObject key={Navigator.getPath(this.state.path) + name}
@@ -92,8 +112,11 @@ class Navigator extends React.Component {
                             isHighlighted={name === this.state.highlightedObject}
                             parentDir={Navigator.getPath(this.state.path)}
                             doubleClick={this.objectDoubleClicked}
-                            click={this.objectClicked}
-                            renamed={this.objectRenamed}/>
+                            highlight={this.highlightObject}
+                            renamed={this.objectRenamed}
+                            unhighlight={this.unhighlightObject}
+                            dragged={this.objectDragged}
+                            dropped={this.objectDropped}/>
         );
     }
 
@@ -107,11 +130,24 @@ class Navigator extends React.Component {
         return systemObjects;
     }
 
+    // need navButton component
+
     render() {
         return (
             <div className='navigator'>
-                <img src='./icons/newFile.png' className='navButtons'></img>
-                <div className="navigatorPath">
+                <button className='edNavButtons leftEdNavButtons'>
+                    <img src='./icons/newFile.png' className='edNavButtonsImg'></img>
+                </button>
+                <button className='edNavButtons leftEdNavButtons'>
+                    <img src='./icons/newFolder.png' className='edNavButtonsImg'></img>
+                </button>
+                <button className='edNavButtons leftEdNavButtons'>
+                    <img src='./icons/uploadIcon.png' className='edNavButtonsImg'></img>
+                </button>
+                <button className='edNavButtons rightEdNavButtons'>
+                    <img src='./icons/deleteIcon.png' className='edNavButtonsImg'></img>
+                </button>
+                <div className="edNavPath">
                     {Navigator.getPath(this.state.path)}
                 </div>
                 <div className="navWrapper" onClick={this.navWindowClicked}>

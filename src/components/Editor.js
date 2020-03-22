@@ -5,13 +5,17 @@ class Editor extends React.Component {
         super(props);
     }
 
+    /*<button className='UIButton topButton save' title='Save changes made to file in editor'>
+                    save
+                </button>*/
+
     render() {
         return (
             <div className='editor'>
-                <button className='UIButton topButton save' title='Save changes made to file in editor'>
-                    save
+                <button className='edNavButtons rightEdNavButtons'>
+                    <img src='./icons/saveIcon.png' className='edNavButtonsImg'></img>
                 </button>
-                <div className='editorPath'>
+                <div className='edNavPath'>
                     {this.props.path}
                 </div>
                     

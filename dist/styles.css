@@ -169,14 +169,30 @@ body {
     height: 100%;
 }
 
-.save {
+.edNavButtonsImg {
+    height: var(--navButtons-height);
+}
+
+.leftEdNavButtons {
     float: left;
 }
 
-.editorPath {
+.rightEdNavButtons {
+    float: right;
+}
+
+.edNavButtons {
+    padding: 0px;
+    border: none;
+    outline: none;
+    margin-left: 1vw;
+}
+
+.edNavPath {
     text-align: center;
     font-size: 1vw;
-    margin-top: calc(2 * (var(--topButton-paddingY) + var(--topButton-border)));
+    height: var(--navButtons-height);
+    overflow: scroll;
 }
 
 .editorTextArea {
@@ -195,18 +211,6 @@ body {
     float: right;
     height: 100%;
     border-left: 1px solid #000000;
-}
-
-.navButtons {
-    height: var(--navButtons-height);
-    float: left;
-    margin-left: 1vw;
-}
-
-.navigatorPath {
-    text-align: center;
-    font-size: 1vw;
-    overflow: scroll;
 }
 
 .navWrapper {
