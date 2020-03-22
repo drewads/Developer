@@ -4,15 +4,20 @@ import SystemObject from './SystemObject';
 class Navigator extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {path: '/', systemObjects: [], highlightedObject: null};
-
-        this.objectClicked = this.objectClicked.bind(this);
-        this.navWindowClicked = this.navWindowClicked.bind(this);
-        this.objectRenamed = this.objectRenamed.bind(this);
-        this.objectDoubleClicked = this.objectDoubleClicked.bind(this);
+        this.state = {path: [], systemObjects: [], highlightedObject: null};
     }
 
-    sortSystemObjects(systemObjects) {
+    static getPath = (pathArray) => {
+        let path = '/';
+
+        for (const dir of pathArray) {
+            path += dir + '/';
+        }
+
+        return path;
+    }
+
+    static sortSystemObjects = (systemObjects) => {
         const dirs = [];
         const files = [];
 
@@ -23,59 +28,82 @@ class Navigator extends React.Component {
         return dirs.concat(files);
     }
 
-    getDirContents(dirPath) {
-        const request = new XMLHttpRequest();
-        const DONE_STATE = 4;
+    static getDirContents = (dirPath) => {
+        return new Promise((resolve, reject) => {
+            const request = new XMLHttpRequest();
+            const DONE_STATE = 4;
 
-        request.onreadystatechange = () => {
-            if (request.readyState === DONE_STATE) {
-                if (request.status === 200) {
-                    this.setState({path: dirPath, systemObjects: this.sortSystemObjects(JSON.parse(request.response))});
-                } else {
-                    alert(request.response);
+            request.onreadystatechange = () => {
+                if (request.readyState === DONE_STATE) {
+                    if (request.status === 200) {
+                        resolve(Navigator.sortSystemObjects(JSON.parse(request.response)));
+                    } else {
+                        reject(request.response);
+                    }
                 }
             }
+
+            request.open('GET', `${window.location.protocol}//${window.location.host}/client-dev-interface/dir-snapshot?Directory=${dirPath}`);
+            request.send();
+        });
+    }
+
+    componentDidMount = async () => {
+        try {
+            this.setState({systemObjects: await Navigator.getDirContents(Navigator.getPath(this.state.path))});
+        } catch (error) {
+            alert(error);
         }
-
-        request.open('GET', `${window.location.protocol}//${window.location.host}/client-dev-interface/dir-snapshot?Directory=${dirPath}`);
-
-        request.send();
     }
 
-    componentDidMount() {
-        this.getDirContents(this.state.path);
-    }
-
-    objectClicked(objProps) {
+    objectClicked = (objProps) => {
         this.setState({highlightedObject: objProps.label});
     }
 
-    navWindowClicked() {
+    navWindowClicked = () => {
         this.setState({highlightedObject: null});
     }
 
-    objectRenamed() {
-        this.getDirContents(this.state.path);
-    }
-
-    objectDoubleClicked(objectName, isDir) {
-        if (isDir) {
-            this.getDirContents(this.state.path + objectName + '/');
+    objectRenamed = async () => {
+        try {
+            this.setState({systemObjects: await Navigator.getDirContents(Navigator.getPath(this.state.path))});
+        } catch (error) {
+            alert(error);
         }
     }
 
-    fillViewer(elements) {
-        const systemObjects = [<SystemObject key={this.state.path + '..'}
+    moveToDirectory = async (pathArray) => {
+        try {
+            this.setState({path: pathArray,
+                systemObjects: await Navigator.getDirContents(Navigator.getPath(pathArray)),
+                highlightedObject: null});
+        } catch (error) {
+            alert(error);
+        }
+    }
+
+    objectDoubleClicked = async (objectName, isDir) => {
+        if (objectName === '..') {
+            this.moveToDirectory(this.state.path.slice(0, -1));
+        }
+        else if (isDir) {
+            this.moveToDirectory(this.state.path.concat(objectName));
+        }
+    }
+
+    // this must change with a change to systemobject
+    fillViewer = (elements) => {
+        const systemObjects = (this.state.path.length !== 0 ? [<SystemObject key={Navigator.getPath(this.state.path) + '..'}
                                 label={'..'} isDir={true}
-                                parentDir={this.state.path}
+                                parentDir={Navigator.getPath(this.state.path)}
                                 doubleClick={this.objectDoubleClicked}
                                 highlighted={'..' === this.state.highlightedObject}
-                                click={this.objectClicked} renamed={this.objectRenamed}/>];
+                                click={this.objectClicked} renamed={this.objectRenamed}/>] : []);
 
         for (const element of elements) {
-            systemObjects.push(<SystemObject key={this.state.path + element['name']}
+            systemObjects.push(<SystemObject key={Navigator.getPath(this.state.path) + element['name']}
                                     label={element['name']} isDir={element['isDir']}
-                                    parentDir={this.state.path}
+                                    parentDir={Navigator.getPath(this.state.path)}
                                     doubleClick={this.objectDoubleClicked}
                                     highlighted={element['name'] === this.state.highlightedObject}
                                     click={this.objectClicked} renamed={this.objectRenamed}/>);
@@ -89,7 +117,7 @@ class Navigator extends React.Component {
             <div className='navigator'>
                 <img src='./icons/newFile.png' className='navButtons'></img>
                 <div className="navigatorPath">
-                    {this.state.path}
+                    {Navigator.getPath(this.state.path)}
                 </div>
                 <div className="navWrapper" onClick={this.navWindowClicked}>
                     <div className="navViewer">
