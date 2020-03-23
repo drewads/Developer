@@ -1,47 +1,40 @@
 import React from 'react';
 import util from './util';
 
-class SystemObjectLabel extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {editable: false};
-    }
-    
-    labelClicked = () => {
-        if (this.props.isHighlighted && !this.props.isPathToParent) {
-            this.setState({editable: true});
+function SystemObjectLabel(props) {
+    const labelClicked = () => {
+        if (props.isHighlighted && !props.isPathToParent) {
+            props.setEditable(true);
         }
     }
 
-    renameObject = async (newName) => {
-        const body = {'oldPath': this.props.parentDir + this.props.label, 'newPath': this.props.parentDir + newName};
+    const renameObject = async (newName) => {
+        const body = {'oldPath': props.parentDir + props.label, 'newPath': props.parentDir + newName};
 
         try {
             await util.makeCDIRequest('PATCH', 'move', {'Content-Type': 'application/json'}, JSON.stringify(body));
-            this.props.renamed();
+            props.renamed();
         } catch (error) {
             alert(error);
         }
     }
 
-    labelChanged = (event) => {
-        this.setState({editable: false});
+    const labelChanged = (event) => {
+        props.setEditable(false);
 
-        if (event.target.value !== this.props.label) {
-            this.renameObject(event.target.value);
+        if (event.target.value !== props.label) {
+            renameObject(event.target.value);
         }
     }
 
-    render() {
-        return (this.state.editable ? 
-                <input autoFocus type='text' className='editObjectLabel' defaultValue={this.props.label}
-                onBlur={this.labelChanged}></input>
+    return (props.editable ? 
+                <input autoFocus type='text' className='editObjectLabel' defaultValue={props.label}
+                onBlur={labelChanged}></input>
                 :
-                <div className="systemObjectLabel" onClick={this.labelClicked}>
-                    {this.props.label}
+                <div className="systemObjectLabel" onClick={labelClicked}>
+                    {props.label}
                 </div>
-                );
-    }
+            );
 }
 
 export default SystemObjectLabel;

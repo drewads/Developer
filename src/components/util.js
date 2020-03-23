@@ -17,7 +17,7 @@ const makeCDIRequest = (method, devModule, headers, body) => {
 
         request.onreadystatechange = () => {
             if (request.readyState === DONE_STATE) {
-                if (request.status === 200) {
+                if (request.status >= 200 && request.status < 300) {
                     resolve(request.response);
                 } else {
                     reject(request.response);

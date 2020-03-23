@@ -1,5 +1,6 @@
 import React from 'react';
 import SystemObject from './SystemObject';
+import EdNavButton from './EdNavButton';
 import util from './util';
 
 const parentLabel = '..';
@@ -7,7 +8,8 @@ const parentLabel = '..';
 class Navigator extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {path: [], systemObjects: [], highlightedObject: null, dragged: null};
+        this.state = {path: [], systemObjects: [], highlightedObject: null, highlightedIsDir: false,
+                        dragged: null};
     }
 
     static getPath = (pathArray) => {
@@ -36,7 +38,7 @@ class Navigator extends React.Component {
             const response = await util.makeCDIRequest('GET', `dir-snapshot?Directory=${dirPath}`, {}, '');
             return Navigator.sortSystemObjects(JSON.parse(response));
         } catch (error) {
-            throw error;
+            alert(error);
         }
     }
 
@@ -48,18 +50,18 @@ class Navigator extends React.Component {
         }
     }
 
-    highlightObject = (objectName) => {
-        this.setState({highlightedObject: objectName});
+    highlightObject = (objectName, isDir) => {
+        this.setState({highlightedObject: objectName, highlightedIsDir: isDir});
     }
 
     unhighlightObject = (objectName) => {
         if (objectName === this.state.highlightedObject) {
-            this.setState({highlightedObject: null});
+            this.setState({highlightedObject: null, highlightedIsDir: false});
         }
     }
 
     navWindowClicked = () => {
-        this.setState({highlightedObject: null, dragged: null});
+        this.setState({highlightedObject: null, highlightedIsDir: false, dragged: null});
     }
 
     objectRenamed = async () => {
@@ -74,7 +76,7 @@ class Navigator extends React.Component {
         try {
             this.setState({path: pathArray,
                 systemObjects: await Navigator.getDirContents(Navigator.getPath(pathArray)),
-                highlightedObject: null, dragged: null});
+                highlightedObject: null, highlightedIsDir: false, dragged: null});
         } catch (error) {
             alert(error);
         }
@@ -95,11 +97,79 @@ class Navigator extends React.Component {
         }
     }
 
-    objectDropped = (droppedOnto) => {
+    objectDropped = async (droppedOnto) => {
         if (this.state.dragged !== droppedOnto) {
-            console.log(this.state.dragged + ' dropped onto ' + droppedOnto);
-            // move
-            // getDir
+            const oldPath = Navigator.getPath(this.state.path) + this.state.dragged;
+            const newPath = Navigator.getPath(this.state.dragged === parentLabel ?
+                                                this.state.path.slice(0, -1)
+                                                : this.state.path.concat(droppedOnto))
+                                                + this.state.dragged;
+            const body = JSON.stringify({'oldPath': oldPath, 'newPath': newPath});
+
+            try {
+                await util.makeCDIRequest('PATCH', 'move', {'Content-Type': 'application/json'}, body);
+                this.setState({systemObjects: await Navigator.getDirContents(Navigator.getPath(this.state.path))});
+            } catch (error) {
+                alert(error);
+            }
+        }
+    }
+
+    isInSystemObjects = (name) => {
+        for (const object of this.state.systemObjects) {
+            if (object['name'] === name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    createNewElement = async (isDir) => {
+        const prefix = 'Untitled';
+        let number = 0;
+        
+        while (this.isInSystemObjects(prefix + (number === 0 ? '' : number.toString()))) {
+            number++;
+        }
+        const name = prefix + (number === 0 ? '' : number.toString())
+
+        const filepath = Navigator.getPath(this.state.path) + name;
+        const body = JSON.stringify({'Filepath' : filepath, 'isDirectory': isDir});
+
+        try {
+            await util.makeCDIRequest('PUT', 'create', {'Content-Type': 'application/json'}, body);
+            this.setState({systemObjects: await Navigator.getDirContents(Navigator.getPath(this.state.path)),
+                            highlightedObject: name, highlightedIsDir: isDir});
+        } catch (error) {
+            alert(error);
+        }
+    }
+
+    createFile = () => {
+        this.createNewElement(false);
+    }
+
+    createDir = () => {
+        this.createNewElement(true);
+    }
+
+    uploadFiles = () => {
+        alert('upload');
+    }
+
+    deleteObject = async () => {
+        if (this.state.highlightedObject === null || this.state.highlightedObject === parentLabel) return;
+
+        const body = JSON.stringify({'Filepath': Navigator.getPath(this.state.path)
+                                                + this.state.highlightedObject,
+                                    'isDirectory': this.state.highlightedIsDir});
+        try {
+            await util.makeCDIRequest('DELETE', 'delete', {'Content-Type': 'application/json'}, body);
+            this.setState({systemObjects: await Navigator.getDirContents(Navigator.getPath(this.state.path)),
+                            highlightedObject: null, highlightedIsDir: false});
+        } catch (error) {
+            alert(error);
         }
     }
 
@@ -130,23 +200,13 @@ class Navigator extends React.Component {
         return systemObjects;
     }
 
-    // need navButton component
-
     render() {
         return (
             <div className='navigator'>
-                <button className='edNavButtons leftEdNavButtons'>
-                    <img src='./icons/newFile.png' className='edNavButtonsImg'></img>
-                </button>
-                <button className='edNavButtons leftEdNavButtons'>
-                    <img src='./icons/newFolder.png' className='edNavButtonsImg'></img>
-                </button>
-                <button className='edNavButtons leftEdNavButtons'>
-                    <img src='./icons/uploadIcon.png' className='edNavButtonsImg'></img>
-                </button>
-                <button className='edNavButtons rightEdNavButtons'>
-                    <img src='./icons/deleteIcon.png' className='edNavButtonsImg'></img>
-                </button>
+                <EdNavButton side='left' image='./icons/newFile.png' onClick={this.createFile}/>
+                <EdNavButton side='left' image='./icons/newFolder.png' onClick={this.createDir}/>
+                <EdNavButton side='left' image='./icons/uploadIcon.png' onClick={this.uploadFiles}/>
+                <EdNavButton side='right' image='./icons/deleteIcon.png' onClick={this.deleteObject}/>
                 <div className="edNavPath">
                     {Navigator.getPath(this.state.path)}
                 </div>

@@ -1,64 +1,76 @@
 import React from 'react';
 import SystemObjectLabel from './SystemObjectLabel';
 
-function SystemObject(props) {
-    const getIcon = (isDir) => {
+class SystemObject extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {labelEditable: false};
+    }
+
+    static getIcon = (isDir) => {
         return ('./icons/' + (isDir ? 'GenericFolderIcon.png' : 'GenericDocumentIcon.png'));
     }
 
-    const objectClicked = (event) => {
+    objectClicked = (event) => {
         event.stopPropagation();
 
-        if (!props.isHighlighted) {
-            props.highlight(props.label);
+        if (!this.props.isHighlighted) {
+            this.props.highlight(this.props.label, this.props.isDir);
         }
     }
 
-    const objectDoubleClicked = () => {
-        props.doubleClick(props.label, props.isDir);
+    objectDoubleClicked = () => {
+        this.props.doubleClick(this.props.label, this.props.isDir);
     }
 
-    const dragHandler = () => {
-        props.dragged(props.label);
+    setEditable = (isEditable) => {
+        this.setState({labelEditable: isEditable});
     }
 
-    const dragEnter = (event) => {
+    dragHandler = () => {
+        this.props.dragged(this.props.label);
+    }
+
+    dragEnter = (event) => {
         event.preventDefault();
 
-        if (props.isDir) {
-            props.highlight(props.label);
+        if (this.props.isDir) {
+            this.props.highlight(this.props.label, this.props.isDir);
         }
     }
 
-    const dragLeave = (event) => {
+    dragLeave = (event) => {
         event.preventDefault();
 
-        props.unhighlight(props.label);
+        this.props.unhighlight(this.props.label);
     }
 
-    const dragOver = (event) => {
+    dragOver = (event) => {
         event.preventDefault();
     }
 
-    const dropHandler = (event) => {
+    dropHandler = (event) => {
         event.preventDefault();
 
-        if (props.isDir) {
-            props.dropped(props.label);
+        if (this.props.isDir) {
+            this.props.dropped(this.props.label);
         }
     }
 
-    return (
-        <div className={'systemObject' + (props.isHighlighted ? ' highlightedSystemObject' : '')}
-            onClick={objectClicked} draggable={true} onDragStart={dragHandler}>
-            <img src={getIcon(props.isDir)} onDoubleClick={objectDoubleClicked} draggable={false}
-                onDragEnter={dragEnter} onDragLeave={dragLeave} onDrop={dropHandler}
-                onDragOver={dragOver}></img>
-            <SystemObjectLabel label={props.label} isHighlighted={props.isHighlighted}
-                                parentDir={props.parentDir} renamed={props.renamed}
-                                isPathToParent={props.isPathToParent}/>
-        </div>
-    );
+    render() {
+        return (
+            <div className={'systemObject' + (this.props.isHighlighted ? ' highlightedSystemObject' : '')}
+                onClick={this.objectClicked} draggable={!this.state.labelEditable} onDragStart={this.dragHandler}>
+                <img src={SystemObject.getIcon(this.props.isDir)} onDoubleClick={this.objectDoubleClicked}
+                    draggable={false} onDragEnter={this.dragEnter} onDragLeave={this.dragLeave}
+                    onDrop={this.dropHandler} onDragOver={this.dragOver}></img>
+                <SystemObjectLabel label={this.props.label} isHighlighted={this.props.isHighlighted}
+                                    editable={this.state.labelEditable} setEditable={this.setEditable}
+                                    parentDir={this.props.parentDir} renamed={this.props.renamed}
+                                    isPathToParent={this.props.isPathToParent}/>
+            </div>
+        );
+    }
 }
 
 export default SystemObject;
