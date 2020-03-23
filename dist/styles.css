@@ -31,6 +31,7 @@ body {
     font-size: 4vw;
 }
 
+/* look at combining UIButton and topButton if only one element uses em. maybe even combine w logout */
 .UIButton {
     background-color: transparent;
     border-color: gray;
@@ -56,108 +57,6 @@ body {
     display: block;
 }
 
-/*
-#editorButtons {
-    width: calc(100% - var(--navigator-width)/var(--buttons-width-frac));
-    float: left;
-    display: flex;
-    justify-content: space-evenly;
-}
-
-#manageFS {
-    width: calc(var(--navigator-width) / var(--buttons-width-frac));
-    float: right;
-}
-
-#manageFSButtons {
-    display: flex;
-    justify-content: space-evenly;
-}
-
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdownContent {
-    display: none;
-    position: absolute;
-    background-color: #f1f1f1;
-    font-size: 1vw;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-}
-
-.dropdownContent a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    cursor: default;
-}
-
-.dropdownContent a:hover {
-    background-color: #ddd;
-}
-
-.moveRenameFormWrapper {
-    margin-top: 4px;
-}
-
-.fromTo {
-    font-size: 1.1vw;
-    float: left;
-}
-
-#moveFrom {
-    display: none;
-}
-
-#generalInput {
-    width: 100%;
-}
-
-.moveElems {
-    visibility: hidden;
-}
-
-.manageFSForm {
-    display: block;
-    outline: none;
-    border: .1em solid lightgray;
-    font-family: 'system-ui', Arial, sans-serif;
-}
-
-.manageFSForm:focus {
-    border-color: gray;
-}
-
-.manageFSFormInterface {
-    width: 90%;
-    float: right;
-}
-
-#manageFSForm {
-    width: 99%;
-    float: left;
-}
-
-#moveToInput {
-    width: calc(87% - 16px);
-    display: inline-block;
-}
-
-#move {
-    width: 14%;
-    display: inline-block;
-}
-*/
-/*
-#edNav {
-    height: 75vh;
-}
-*/
 .edNav {
     height: var(--edNav-height);
     clear: both;

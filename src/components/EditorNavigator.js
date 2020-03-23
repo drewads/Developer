@@ -2,6 +2,8 @@ import React from 'react';
 import Editor from './Editor';
 import Navigator from './Navigator';
 
+'use strict';
+
 class EditorNavigator extends React.Component {
     constructor(props) {
         super(props);

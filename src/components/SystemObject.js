@@ -1,6 +1,8 @@
 import React from 'react';
 import SystemObjectLabel from './SystemObjectLabel';
 
+'use strict';
+
 class SystemObject extends React.Component {
     constructor(props) {
         super(props);

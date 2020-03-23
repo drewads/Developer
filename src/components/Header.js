@@ -1,5 +1,7 @@
 import React from 'react';
 
+'use strict';
+
 function Header() {
     const logOut = () => {
         console.log('logging out.');

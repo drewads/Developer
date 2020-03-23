@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * makeCDIRequest makes an HTTP request to the server to perform a client-dev-interface
  * function. It returns a Promise that is resolved on successful completion of the

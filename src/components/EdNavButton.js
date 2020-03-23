@@ -1,5 +1,7 @@
 import React from 'react';
 
+'use strict';
+
 function EdNavButton(props) {
     return (
         <button className={`edNavButtons ${props.side}EdNavButtons`} onClick={props.onClick}>

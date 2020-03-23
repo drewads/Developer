@@ -1,4 +1,7 @@
 import React from 'react';
+import EdNavButton from './EdNavButton';
+
+'use strict';
 
 class Editor extends React.Component {
     constructor(props) {
@@ -8,13 +11,14 @@ class Editor extends React.Component {
     /*<button className='UIButton topButton save' title='Save changes made to file in editor'>
                     save
                 </button>*/
+    saveFile = () => {
+        alert('save');
+    }
 
     render() {
         return (
             <div className='editor'>
-                <button className='edNavButtons rightEdNavButtons'>
-                    <img src='./icons/saveIcon.png' className='edNavButtonsImg'></img>
-                </button>
+                <EdNavButton side='right' image='./icons/saveIcon.png' onClick={this.saveFile}/>
                 <div className='edNavPath'>
                     {this.props.path}
                 </div>

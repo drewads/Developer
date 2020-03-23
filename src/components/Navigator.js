@@ -1,7 +1,10 @@
 import React from 'react';
 import SystemObject from './SystemObject';
 import EdNavButton from './EdNavButton';
+import UploadButton from './UploadButton';
 import util from './util';
+
+'use strict';
 
 const parentLabel = '..';
 
@@ -154,8 +157,20 @@ class Navigator extends React.Component {
         this.createNewElement(true);
     }
 
-    uploadFiles = () => {
-        alert('upload');
+    uploadFiles = async (files) => {
+        const uploadForm = new FormData();
+        const dir = Navigator.getPath(this.state.path);
+
+        for (const file of files) {
+            uploadForm.append(dir + file.name, file);
+        }
+
+        try {
+            await util.makeCDIRequest('PUT', 'upload', {}, uploadForm);
+            this.setState({systemObjects: await Navigator.getDirContents(dir)});
+        } catch (error) {
+            alert(error);
+        }
     }
 
     deleteObject = async () => {
@@ -205,7 +220,7 @@ class Navigator extends React.Component {
             <div className='navigator'>
                 <EdNavButton side='left' image='./icons/newFile.png' onClick={this.createFile}/>
                 <EdNavButton side='left' image='./icons/newFolder.png' onClick={this.createDir}/>
-                <EdNavButton side='left' image='./icons/uploadIcon.png' onClick={this.uploadFiles}/>
+                <UploadButton side='left' image='./icons/uploadIcon.png' onClick={this.uploadFiles}/>
                 <EdNavButton side='right' image='./icons/deleteIcon.png' onClick={this.deleteObject}/>
                 <div className="edNavPath">
                     {Navigator.getPath(this.state.path)}

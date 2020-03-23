@@ -1,6 +1,8 @@
 import React from 'react';
 import util from './util';
 
+'use strict';
+
 function SystemObjectLabel(props) {
     const labelClicked = () => {
         if (props.isHighlighted && !props.isPathToParent) {
