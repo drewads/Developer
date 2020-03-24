@@ -38,12 +38,10 @@ const makeCDIRequest = (method, devModule, headers, body) => {
     });
 }
 
-
 const getMediaType = (mimeType) => {
     const delim = mimeType.indexOf(';');
     
     return (delim === -1 ? mimeType : mimeType.substring(0, delim));
 }
-
 
 export default { makeCDIRequest, getMediaType };

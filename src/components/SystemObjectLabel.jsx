@@ -11,11 +11,13 @@ function SystemObjectLabel(props) {
     }
 
     const renameObject = async (newName) => {
-        const body = {'oldPath': props.parentDir + props.label, 'newPath': props.parentDir + newName};
+        const oldPath = props.parentDir + props.label;
+        const newPath = props.parentDir + newName;
+        const body = {'oldPath': oldPath, 'newPath': newPath};
 
         try {
             await util.makeCDIRequest('PATCH', 'move', {'Content-Type': 'application/json'}, JSON.stringify(body));
-            props.renamed();
+            props.renamed(oldPath, newPath);
         } catch (error) {
             alert(error);
         }

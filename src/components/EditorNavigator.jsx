@@ -30,6 +30,12 @@ class EditorNavigator extends React.Component {
             alert(error);
         }
     }
+
+    moveFile = (oldPath, newPath) => {
+        this.setState(state => {
+            return (oldPath === this.state.file ? {file: newPath, isNew: false} : state);
+        });
+    }
     
     deleteFile = (filepath) => {
       	this.setState(state => {
@@ -53,7 +59,7 @@ class EditorNavigator extends React.Component {
                 <Editor path={this.state.file} mimeType={this.state.mimeType}
                         defaultValue={this.state.defaultValue} edited={this.fileEdited}
                         saved={this.fileSaved} isNew={this.state.isNew}/>
-                <Navigator edit={this.editFile} delete={this.deleteFile}/>
+                <Navigator edit={this.editFile} move={this.moveFile} delete={this.deleteFile}/>
             </div>
         );
     }

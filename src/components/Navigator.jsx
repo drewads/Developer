@@ -71,7 +71,8 @@ class Navigator extends React.Component {
         this.setState({highlightedObject: null, highlightedIsDir: false, dragged: null});
     }
 
-    objectRenamed = async () => {
+    objectRenamed = async (oldPath, newPath) => {
+        this.props.move(oldPath, newPath);
         const path = Navigator.getPath(this.state.path);
 
         try {
@@ -113,16 +114,17 @@ class Navigator extends React.Component {
 
     objectDropped = async (droppedOnto) => {
         if (this.state.dragged !== droppedOnto) {
-            const oldPath = Navigator.getPath(this.state.path) + this.state.dragged;
-            const newPath = Navigator.getPath(this.state.dragged === parentLabel ?
+            const path = Navigator.getPath(this.state.path);
+            const oldPath = path + this.state.dragged;
+            const newPath = Navigator.getPath(droppedOnto === parentLabel ?
                                                 this.state.path.slice(0, -1)
                                                 : this.state.path.concat(droppedOnto))
                                                 + this.state.dragged;
             const body = JSON.stringify({'oldPath': oldPath, 'newPath': newPath});
 
-            const path = Navigator.getPath(this.state.path);
             try {
                 await util.makeCDIRequest('PATCH', 'move', {'Content-Type': 'application/json'}, body);
+                this.props.move(oldPath, newPath);
                 const newSystemObjects = await Navigator.getDirContents(path);
                 this.setState(state => {
                     return (Navigator.getPath(state.path) === path ? { systemObjects: newSystemObjects } : state);
@@ -152,15 +154,15 @@ class Navigator extends React.Component {
         }
         const name = prefix + (number === 0 ? '' : number.toString())
 
-        const filepath = Navigator.getPath(this.state.path) + name;
+        const dirPath = Navigator.getPath(this.state.path);
+        const filepath = dirPath + name;
         const body = JSON.stringify({'Filepath' : filepath, 'isDirectory': isDir});
 
-        const path = Navigator.getPath(this.state.path);
         try {
             await util.makeCDIRequest('PUT', 'create', {'Content-Type': 'application/json'}, body);
-            const newSystemObjects = await Navigator.getDirContents(path);
+            const newSystemObjects = await Navigator.getDirContents(dirPath);
             this.setState(state => {
-                return (Navigator.getPath(state.path) === path ?
+                return (Navigator.getPath(state.path) === dirPath ?
                         { systemObjects: newSystemObjects, highlightedObject: name, highlightedIsDir: isDir }
                         : state);
             });

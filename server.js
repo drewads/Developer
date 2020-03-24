@@ -1,7 +1,7 @@
 import express from 'express';
 import cdi from 'client-dev-interface';
 import http from 'http';
-import renderedApp from './src/renderedApp';
+import renderedApp from './src/renderedApp.jsx';
 
 const server = express();
 const PORT = 8080;
