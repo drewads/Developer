@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-
 import App from './components/App.jsx';
 
 export default ReactDOMServer.renderToString(
@@ -9,14 +8,15 @@ export default ReactDOMServer.renderToString(
             <title>
                 Developer
             </title>
+          	<link rel="icon" type="image/png" href="icons/DevFavicon.png" sizes="64x64"></link>
             <link rel="stylesheet" href="./styles.css"></link>
-            <link rel="stylesheet" href="./codemirror-5.52.2/lib/codemirror.css"></link>
-            <script src="./codemirror-5.52.2/lib/codemirror.js"></script>
-            <script src="./codemirror-5.52.2/mode/javascript/javascript.js"></script>
-  			<script src="./codemirror-5.52.2/mode/jsx/jsx.js"></script>
-            <script src="./codemirror-5.52.2/mode/css/css.js"></script>
-            <script src="./codemirror-5.52.2/mode/xml/xml.js"></script>
-            <script src="./codemirror-5.52.2/mode/htmlmixed/htmlmixed.js"></script>
+            <link rel="stylesheet" href="codemirror/lib/codemirror.css"></link>
+            <script src="codemirror/lib/codemirror.js"></script>
+            <script src="codemirror/mode/javascript/javascript.js"></script>
+  			<script src="codemirror/mode/jsx/jsx.js"></script>
+            <script src="codemirror/mode/css/css.js"></script>
+            <script src="codemirror/mode/xml/xml.js"></script>
+            <script src="codemirror/mode/htmlmixed/htmlmixed.js"></script>
         </head>
         <body>
             <div id='root'>

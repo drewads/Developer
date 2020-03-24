@@ -1,6 +1,7 @@
 import express from 'express';
 import cdi from 'client-dev-interface';
 import http from 'http';
+import path from 'path';
 import renderedApp from './src/renderedApp.jsx';
 
 const server = express();
@@ -26,7 +27,7 @@ server.use((req, res, next) => {
 
 server.all(devURLRegex, async (req, res) => {
     try {
-        const success = await cdi.handle(req, __dirname, __dirname + '/tmp_dir');
+        const success = await cdi.handle(req, __dirname, path.join(__dirname, 'tmp_dir'));
         res.status(success.statusCode);
         res.header(success.responseHeaders);
         res.send(success.body);
@@ -37,11 +38,12 @@ server.all(devURLRegex, async (req, res) => {
     }
 });
 
-server.use(express.static('dist'));
-
 server.get('/', (req, res) => {
     res.send(renderedApp);
 });
+
+server.use(express.static(path.join(__dirname, 'dist')));
+server.use(express.static(path.join(__dirname, 'node_modules')));
 
 const commaDelimStr = (strArray) => {
     if (strArray.length === 0) {
