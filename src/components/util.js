@@ -4,7 +4,7 @@
  * makeCDIRequest makes an HTTP request to the server to perform a client-dev-interface
  * function. It returns a Promise that is resolved on successful completion of the
  * client-dev-interface function and is rejected on failure. The value of the Promise
- * is the response body no matter whether the Promise is resolved and rejected.
+ * is the XMLHttpRequest object on resolve and the response body on reject.
  * 
  * @param {string} method HTTP request method
  * @param {string} devModule the devModule part of the URL
@@ -20,7 +20,7 @@ const makeCDIRequest = (method, devModule, headers, body) => {
         request.onreadystatechange = () => {
             if (request.readyState === DONE_STATE) {
                 if (request.status >= 200 && request.status < 300) {
-                    resolve(request.response);
+                    resolve(request);
                 } else {
                     reject(request.response);
                 }
@@ -38,4 +38,12 @@ const makeCDIRequest = (method, devModule, headers, body) => {
     });
 }
 
-export default { makeCDIRequest };
+
+const getMediaType = (mimeType) => {
+    const delim = mimeType.indexOf(';');
+    
+    return (delim === -1 ? mimeType : mimeType.substring(0, delim));
+}
+
+
+export default { makeCDIRequest, getMediaType };

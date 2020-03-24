@@ -24,8 +24,6 @@ server.use((req, res, next) => {
     }
 });
 
-server.use(express.static('dist'));
-
 server.all(devURLRegex, async (req, res) => {
     try {
         const success = await cdi.handle(req, __dirname, __dirname + '/tmp_dir');
@@ -38,6 +36,8 @@ server.all(devURLRegex, async (req, res) => {
         res.send(error.message);
     }
 });
+
+server.use(express.static('dist'));
 
 server.get('/', (req, res) => {
     res.send(renderedApp);

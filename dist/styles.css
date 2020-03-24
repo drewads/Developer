@@ -8,13 +8,7 @@
 
     --navButtons-height: 1.5vw;
     --navWrapper-height: calc(100% - var(--navButtons-height));
-
-    --topButton-paddingY: .25em;
-    --topButton-border: 1px;
-    --UIButton-font-size: 1vw;
-    --UIButton-height: calc(var(--UIButton-font-size) + 1vw);
-    --saveButton-height: calc(2 * (var(--topButton-paddingY) + var(--topButton-border)) + var(--UIButton-height));
-    --editorTextArea-height: calc(100% - var(--saveButton-height));
+    --editorWrapper-height: calc(100% - var(--navButtons-height));
 }
 
 body {
@@ -36,16 +30,16 @@ body {
     background-color: transparent;
     border-color: gray;
     border-radius: .5em;
-    font-size: var(--UIButton-font-size);
+    font-size: 1vw;
     font-family: 'system-ui', 'Arial', sans-serif;
     outline: none;
 }
 
 .topButton {
     margin-bottom: .1em;
-    padding-top: var(--topButton-paddingY);
-    padding-bottom: var(--topButton-paddingY);
-    border-width: var(--topButton-border);
+    padding-top: .25em;
+    padding-bottom: .25em;
+    border-width: 1px;
 }
 
 .UIButton:hover {
@@ -94,15 +88,9 @@ body {
     overflow: scroll;
 }
 
-.editorTextArea {
+.editorWrapper {
     width: 100%;
-    height: var(--editorTextArea-height); /* was 460 px */
-    resize: none;
-    font-family: 'Source Code Pro', monospace;
-    outline: none;
-    border: none;
-    white-space: nowrap; /* allows horizontal scroll*/
-    tab-size: 4;
+    height: var(--editorWrapper-height);
 }
 
 .navigator {
