@@ -83,7 +83,7 @@ body {
 
 .edNavPath {
     text-align: center;
-    font-size: 1vw;
+    font-size: 1.1vw;
     height: var(--navButtons-height);
     overflow: scroll;
 }

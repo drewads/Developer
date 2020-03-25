@@ -1,4 +1,3 @@
-2) make uniform looking icons
 3) potentially separate Navigator into two components
 4) Potentially check to make sure we aren't overwiting a file when we move/rename.
 	However, this is pretty hard on move (requires a get dir contents).
