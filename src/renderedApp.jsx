@@ -11,6 +11,7 @@ export default ReactDOMServer.renderToString(
           	<link rel="icon" type="image/png" href="icons/DevFavicon.png" sizes="64x64"></link>
             <link rel="stylesheet" href="./styles.css"></link>
             <link rel="stylesheet" href="codemirror/lib/codemirror.css"></link>
+            <link rel="stylesheet" href="codemirror/theme/monokai.css"></link>
             <script src="codemirror/lib/codemirror.js"></script>
             <script src="codemirror/mode/javascript/javascript.js"></script>
   			<script src="codemirror/mode/jsx/jsx.js"></script>
