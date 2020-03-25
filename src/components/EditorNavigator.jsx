@@ -57,8 +57,8 @@ class EditorNavigator extends React.Component {
         return (
             <div className='edNav'>
                 <Editor path={this.state.file} mimeType={this.state.mimeType}
-                        defaultValue={this.state.defaultValue} edited={this.fileEdited}
-                        saved={this.fileSaved} isNew={this.state.isNew}/>
+                        defaultValue={this.state.defaultValue} unsaved={this.state.edited}
+                        edited={this.fileEdited} saved={this.fileSaved} isNew={this.state.isNew}/>
                 <Navigator edit={this.editFile} move={this.moveFile} delete={this.deleteFile}/>
             </div>
         );

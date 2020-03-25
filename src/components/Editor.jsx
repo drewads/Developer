@@ -62,7 +62,7 @@ class Editor extends React.Component {
             <div className='editor'>
                 <EdNavButton side='right' image='./icons/saveIcon.png' onClick={this.saveFile}/>
                 <div className='edNavPath'>
-                    {this.props.path}
+                    {this.props.path}<span>{(this.props.unsaved ? ' (unsaved)' : '')}</span>
                 </div>
                     
                 <div className='editorWrapper' ref={this.editorWrapper}
