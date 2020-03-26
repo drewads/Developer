@@ -1,4 +1,3 @@
-
 'use strict';
 
 class DirPath {
@@ -8,20 +7,22 @@ class DirPath {
       	this.path = pathArray;
     }
   
-  	moveTo = (dir) => {
-      	if (dir === DirPath.parentLabel) {
-          	// slice to one less if path.length > 0
-        } else {
-          	// concat dir onto the end of path
+  	moveTo = (dirName) => {
+      	this.path = (dirName === DirPath.parentLabel ? this.path.slice(0, -1) : this.path.concat(dirName));
+    }
+    
+    isAncestorOf = (otherPath) => {	
+        for (i = 0; i < this.path.length; i++) {
+            if (this.path[i] !== otherPath.path[i]) {
+                return false;
+            }
         }
+
+        return true;
     }
     
-    isAncestor = (otherPath) => {
-     	// TODO: write this function that compares two paths 	
-    }
-    
-    isEqual = () => {
-      	// TODO: write equality function
+    equal = (otherPath) => {
+      	return this.path.length === otherPath.path.length && this.isAncestorOf(otherPath);
     }
     
     toString = () => {
@@ -42,12 +43,12 @@ class Filepath extends DirPath {
       	this.file = file;
     }
   
-  	isEqual = (otherPath) => {
-      	// TODO: write equality
+  	equal = (otherFilepath) => {
+      	return super.equal(otherFilepath) && this.file === otherFilepath.file;
     }
     
-    isAncestor = (otherPath) => {
-      	return this.isEqual(otherPath);
+    isAncestorOf = (otherFilepath) => {
+      	return this.isEqual(otherFilepath);
     }
   
   	toString = () => {
