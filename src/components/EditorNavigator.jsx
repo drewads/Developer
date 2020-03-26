@@ -11,11 +11,19 @@ class EditorNavigator extends React.Component {
         this.state = {file: null, mimeType: null, defaultValue: '', edited: false, isNew: false};
     }
 
-    editFile = async (filepath) => {
+    stateForNewFile = async (filepath) => {
         try {
             const request = await util.makeCDIRequest('GET', `edit?Filepath=${filepath}`, {}, '');
-            const newState = {file: filepath, mimeType: request.getResponseHeader('Content-Type'),
-                                defaultValue: request.response, edited: false, isNew: true};
+            return {file: filepath, mimeType: request.getResponseHeader('Content-Type'),
+                    defaultValue: request.response, edited: false, isNew: true};
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    editFile = async (filepath) => {
+        try {
+            const newState = await this.stateForNewFile(filepath);
             
             if (this.state.edited) {
                 const change = window.confirm(`The file ${this.state.file} has unsaved changes.\n`
@@ -31,10 +39,20 @@ class EditorNavigator extends React.Component {
         }
     }
 
-    moveFile = (oldPath, newPath) => {
-        this.setState(state => {
-            return (oldPath === this.state.file ? {file: newPath, isNew: false} : state);
-        });
+    moveFile = async (oldPath, newPath) => {
+        // is current file destination for move? - if yes, isNew: true
+        if (oldPath === this.state.file) {
+            this.setState({file: newPath, isNew: false});
+        } else if (newPath === this.state.file) {
+            try {
+                this.setState(await this.stateForNewFile(newPath));
+            } catch (error) {
+                alert(error);
+            }
+        }
+
+        // does the path to current file change bc rename of ancestor directory?
+        // need to hold path as array in this.state.file
     }
     
     deleteFile = (filepath) => {
