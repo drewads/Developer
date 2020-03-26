@@ -4,21 +4,21 @@
   "description": "Web development environment allowing full access to files on the server from a browser.",
   "main": "server.js",
   "dependencies": {
-    "@babel/core": "^7.8.7",
+    "@babel/core": "^7.9.0",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-transform-runtime": "^7.9.0",
-    "@babel/preset-env": "^7.8.7",
-    "@babel/preset-react": "^7.8.3",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-react": "^7.9.4",
     "@babel/runtime": "^7.9.2",
-    "babel-loader": "^8.0.6",
-    "client-dev-interface": "^1.0.1",
+    "babel-loader": "^8.1.0",
+    "client-dev-interface": "^1.0.2",
     "codemirror": "^5.52.2",
     "express": "^4.17.1",
     "formidable": "^1.2.2",
     "mime": "^2.4.4",
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0",
-    "webpack": "^4.42.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11"
   },
   "devDependencies": {
@@ -26,7 +26,7 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.19.0",
-    "eslint-plugin-react-hooks": "^2.5.0",
+    "eslint-plugin-react-hooks": "^2.5.1",
     "nodemon": "^2.0.2"
   },
   "scripts": {

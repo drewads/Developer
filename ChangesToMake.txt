@@ -1,7 +1,3 @@
-3) potentially separate Navigator into two components
-4) Potentially check to make sure we aren't overwiting a file when we move/rename.
-	However, this is pretty hard on move (requires a get dir contents).
-    This is potentially worth it though.
 5) Could try to change filepath in editor when ancestor dir name is changed
 	(hold filepath in editor as pathArray?)
 8) Comment and clean up code.

@@ -112,6 +112,21 @@ class Navigator extends React.Component {
         }
     }
 
+    moveObject = async (oldPath, newPath, dirPath) => {
+        const body = JSON.stringify({'oldPath': oldPath, 'newPath': newPath});
+        
+        try {
+            await util.makeCDIRequest('PATCH', 'move', {'Content-Type': 'application/json'}, body);
+            this.props.move(oldPath, newPath);
+            const newSystemObjects = await Navigator.getDirContents(dirPath);
+            this.setState(state => {
+                return (Navigator.getPath(state.path) === dirPath ? { systemObjects: newSystemObjects } : state);
+            });
+        } catch (error) {
+            alert(error);
+        }
+    }
+
     objectDropped = async (droppedOnto) => {
         if (this.state.dragged !== droppedOnto) {
             const path = Navigator.getPath(this.state.path);
@@ -120,17 +135,17 @@ class Navigator extends React.Component {
                                                 this.state.path.slice(0, -1)
                                                 : this.state.path.concat(droppedOnto))
                                                 + this.state.dragged;
-            const body = JSON.stringify({'oldPath': oldPath, 'newPath': newPath});
 
+            // check newPath doesn't already exist
             try {
-                await util.makeCDIRequest('PATCH', 'move', {'Content-Type': 'application/json'}, body);
-                this.props.move(oldPath, newPath);
-                const newSystemObjects = await Navigator.getDirContents(path);
-                this.setState(state => {
-                    return (Navigator.getPath(state.path) === path ? { systemObjects: newSystemObjects } : state);
-                });
+                await util.makeCDIRequest('GET', `exists?Filepath=${newPath}`, {}, {});
+                if (window.confirm(`The file ${newPath} already exists. Would you like to replace it?`)) {
+                    await this.moveObject(oldPath, newPath, path);
+                }
             } catch (error) {
-                alert(error);
+                if (error === 'filesystem entry does not exist') {
+                    await this.moveObject(oldPath, newPath, path);
+                } else alert(error);
             }
         }
     }

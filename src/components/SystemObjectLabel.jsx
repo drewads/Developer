@@ -10,9 +10,7 @@ function SystemObjectLabel(props) {
         }
     }
 
-    const renameObject = async (newName) => {
-        const oldPath = props.parentDir + props.label;
-        const newPath = props.parentDir + newName;
+    const submitRename = async (oldPath, newPath) => {
         const body = {'oldPath': oldPath, 'newPath': newPath};
 
         try {
@@ -20,6 +18,23 @@ function SystemObjectLabel(props) {
             props.renamed(oldPath, newPath);
         } catch (error) {
             alert(error);
+        }
+    }
+
+    const renameObject = async (newName) => {
+        const oldPath = props.parentDir + props.label;
+        const newPath = props.parentDir + newName;
+
+        // check newPath doesn't already exist
+        try {
+            await util.makeCDIRequest('GET', `exists?Filepath=${newPath}`, {}, {});
+            if (window.confirm(`The file ${newPath} already exists. Would you like to replace it?`)) {
+                await submitRename(oldPath, newPath);
+            }
+        } catch (error) {
+            if (error === 'filesystem entry does not exist') {
+                await submitRename(oldPath, newPath);
+            } else alert(error);
         }
     }
 
