@@ -1,20 +1,21 @@
 import React from 'react';
 import util from './util.js';
+import { FilePath } from './Filepath.js';
 
 'use strict';
 
 function SystemObjectLabel(props) {
     const labelClicked = () => {
-        if (props.isHighlighted && !props.isPathToParent) {
+        if (props.isHighlighted && !props.filepath.isPathToParent()) {
             props.setEditable(true);
         }
     }
 
     const submitRename = async (oldPath, newPath) => {
-        const body = {'oldPath': oldPath, 'newPath': newPath};
+        const body = JSON.stringify({'oldPath': oldPath.toString(), 'newPath': newPath.toString()});
 
         try {
-            await util.makeCDIRequest('PATCH', 'move', {'Content-Type': 'application/json'}, JSON.stringify(body));
+            await util.makeCDIRequest('PATCH', 'move', {'Content-Type': 'application/json'}, body);
             props.renamed(oldPath, newPath);
         } catch (error) {
             alert(error);
@@ -22,38 +23,31 @@ function SystemObjectLabel(props) {
     }
 
     const renameObject = async (newName) => {
-        const oldPath = props.parentDir + props.label;
-        const newPath = props.parentDir + newName;
+        const oldPath = props.filepath;
+        const newPath = new FilePath(props.filepath, newName);
 
         // check newPath doesn't already exist
-        try {
-            await util.makeCDIRequest('GET', `exists?Filepath=${newPath}`, {}, {});
-            if (window.confirm(`The file ${newPath} already exists. Would you like to replace it?`)) {
-                await submitRename(oldPath, newPath);
-            }
-        } catch (error) {
-            if (error === 'filesystem entry does not exist') {
-                await submitRename(oldPath, newPath);
-            } else alert(error);
+        if (await util.confirmOverwrite(newPath)) {
+            await submitRename(oldPath, newPath);
         }
     }
 
     const labelChanged = (event) => {
         props.setEditable(false);
 
-        if (event.target.value !== props.label) {
+        if (event.target.value !== props.filepath.file) {
             renameObject(event.target.value);
         }
     }
 
     return (props.editable ? 
-                <input autoFocus type='text' className='editObjectLabel' defaultValue={props.label}
-                onBlur={labelChanged}></input>
-                :
-                <div className="systemObjectLabel" onClick={labelClicked}>
-                    {props.label}
-                </div>
-            );
+            <input autoFocus type='text' className='editObjectLabel' defaultValue={props.filepath.file}
+            onBlur={labelChanged}></input>
+            :
+            <div className="systemObjectLabel" onClick={labelClicked}>
+                {props.filepath.file}
+            </div>
+    );
 }
 
 export default SystemObjectLabel;

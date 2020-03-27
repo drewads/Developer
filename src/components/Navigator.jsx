@@ -3,26 +3,15 @@ import SystemObject from './SystemObject.jsx';
 import EdNavButton from './EdNavButton.jsx';
 import UploadButton from './UploadButton.jsx';
 import util from './util.js';
+import { DirPath, FilePath } from './Filepath.js';
 
 'use strict';
-
-const parentLabel = '..';
 
 class Navigator extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {path: [], systemObjects: [], highlightedObject: null, highlightedIsDir: false,
-                        dragged: null};
-    }
-
-    static getPath = (pathArray) => {
-        let path = '/';
-
-        for (const dir of pathArray) {
-            path += dir + '/';
-        }
-
-        return path;
+        this.state = {path: new DirPath(), systemObjects: [], highlightedObject: null,
+                        highlightedIsDir: false, dragged: null};
     }
 
     static sortSystemObjects = (systemObjects) => {
@@ -38,7 +27,8 @@ class Navigator extends React.Component {
 
     static getDirContents = async (dirPath) => {
         try {
-            const request = await util.makeCDIRequest('GET', `dir-snapshot?Directory=${dirPath}`, {}, '');
+            const request = await util.makeCDIRequest('GET', `dir-snapshot?Directory=${dirPath.toString()}`,
+                                                        {}, '');
             return Navigator.sortSystemObjects(JSON.parse(request.response));
         } catch (error) {
             throw error;
@@ -46,23 +36,23 @@ class Navigator extends React.Component {
     }
 
     componentDidMount = async () => {
-        const path = Navigator.getPath(this.state.path);
+        const path = this.state.path;
         try {
             const newSystemObjects = await Navigator.getDirContents(path);
             this.setState(state => {
-                return (Navigator.getPath(state.path) === path ? { systemObjects: newSystemObjects } : state);
+                return (state.path.equals(path) ? { systemObjects: newSystemObjects } : state);
             });
         } catch (error) {
             alert(error);
         }
     }
 
-    highlightObject = (objectName, isDir) => {
-        this.setState({highlightedObject: objectName, highlightedIsDir: isDir});
+    highlightObject = (object, isDir) => {
+        this.setState({highlightedObject: object, highlightedIsDir: isDir});
     }
 
-    unhighlightObject = (objectName) => {
-        if (objectName === this.state.highlightedObject) {
+    unhighlightObject = (object) => {
+        if (object.equals(this.state.highlightedObject)) {
             this.setState({highlightedObject: null, highlightedIsDir: false});
         }
     }
@@ -73,54 +63,51 @@ class Navigator extends React.Component {
 
     objectRenamed = async (oldPath, newPath) => {
         this.props.move(oldPath, newPath);
-        const path = Navigator.getPath(this.state.path);
+        const path = this.state.path;
 
         try {
             const newSystemObjects = await Navigator.getDirContents(path);
             this.setState(state => {
-                return (Navigator.getPath(state.path) === path ? { systemObjects: newSystemObjects } : state);
+                return (state.path.equals(path) ? { systemObjects: newSystemObjects } : state);
             });
         } catch (error) {
             alert(error);
         }
     }
 
-    moveToDirectory = async (pathArray) => {
+    moveToDirectory = async (dirPath) => {
         try {
-            this.setState({path: pathArray,
-                systemObjects: await Navigator.getDirContents(Navigator.getPath(pathArray)),
+            this.setState({path: dirPath,
+                systemObjects: await Navigator.getDirContents(dirPath),
                 highlightedObject: null, highlightedIsDir: false, dragged: null});
         } catch (error) {
             alert(error);
         }
     }
 
-    objectDoubleClicked = async (objectName, isDir) => {
-        if (objectName === parentLabel) {
-            this.moveToDirectory(this.state.path.slice(0, -1));
-        }
-        else if (isDir) {
-            this.moveToDirectory(this.state.path.concat(objectName));
+    objectDoubleClicked = async (object, isDir) => {
+        if (isDir) {
+            const path = this.state.path;
+            path.moveTo(object.file);
+            this.moveToDirectory(path);
         } else {
-            this.props.edit(Navigator.getPath(this.state.path) + objectName);
+            this.props.edit(object);
         }
     }
 
-    objectDragged = (objectName) => {
-        if (this.state.dragged !== objectName) {
-            this.setState({dragged: objectName});
-        }
+    objectDragged = (object) => {
+        this.setState(state => { return (object.equals(this.state.dragged) ? state : {dragged: object}); });
     }
 
     moveObject = async (oldPath, newPath, dirPath) => {
-        const body = JSON.stringify({'oldPath': oldPath, 'newPath': newPath});
+        const body = JSON.stringify({'oldPath': oldPath.toString(), 'newPath': newPath.toString()});
         
         try {
             await util.makeCDIRequest('PATCH', 'move', {'Content-Type': 'application/json'}, body);
             this.props.move(oldPath, newPath);
             const newSystemObjects = await Navigator.getDirContents(dirPath);
             this.setState(state => {
-                return (Navigator.getPath(state.path) === dirPath ? { systemObjects: newSystemObjects } : state);
+                return (state.path.equals(dirPath) ? { systemObjects: newSystemObjects } : state);
             });
         } catch (error) {
             alert(error);
@@ -128,24 +115,15 @@ class Navigator extends React.Component {
     }
 
     objectDropped = async (droppedOnto) => {
-        if (this.state.dragged !== droppedOnto) {
-            const path = Navigator.getPath(this.state.path);
-            const oldPath = path + this.state.dragged;
-            const newPath = Navigator.getPath(droppedOnto === parentLabel ?
-                                                this.state.path.slice(0, -1)
-                                                : this.state.path.concat(droppedOnto))
-                                                + this.state.dragged;
+        if (!droppedOnto.equals(this.state.dragged)) {
+            const path = this.state.path;
+            const oldPath = new FilePath(path, this.state.dragged.file);
+            const newPath = new FilePath(path, this.state.dragged.file);
+            newPath.moveTo(droppedOnto.file);
 
             // check newPath doesn't already exist
-            try {
-                await util.makeCDIRequest('GET', `exists?Filepath=${newPath}`, {}, {});
-                if (window.confirm(`The file ${newPath} already exists. Would you like to replace it?`)) {
-                    await this.moveObject(oldPath, newPath, path);
-                }
-            } catch (error) {
-                if (error === 'filesystem entry does not exist') {
-                    await this.moveObject(oldPath, newPath, path);
-                } else alert(error);
+            if (await util.confirmOverwrite(newPath)) {
+                await this.moveObject(oldPath, newPath, path);
             }
         }
     }
@@ -160,26 +138,29 @@ class Navigator extends React.Component {
         return false;
     }
 
-    createNewElement = async (isDir) => {
+    getFreeElemName = () => {
         const prefix = 'Untitled';
         let number = 0;
         
         while (this.isInSystemObjects(prefix + (number === 0 ? '' : number.toString()))) {
             number++;
         }
-        const name = prefix + (number === 0 ? '' : number.toString())
 
-        const dirPath = Navigator.getPath(this.state.path);
-        const filepath = dirPath + name;
-        const body = JSON.stringify({'Filepath' : filepath, 'isDirectory': isDir});
+        return prefix + (number === 0 ? '' : number.toString());
+    }
+
+    createNewElement = async (isDir) => {
+        const dirPath = this.state.path;
+        const filepath = new FilePath(dirPath, this.getFreeElemName());
+        const body = JSON.stringify({'Filepath' : filepath.toString(), 'isDirectory': isDir});
 
         try {
             await util.makeCDIRequest('PUT', 'create', {'Content-Type': 'application/json'}, body);
             const newSystemObjects = await Navigator.getDirContents(dirPath);
             this.setState(state => {
-                return (Navigator.getPath(state.path) === dirPath ?
-                        { systemObjects: newSystemObjects, highlightedObject: name, highlightedIsDir: isDir }
-                        : state);
+                return (state.path.equals(dirPath) ?
+                        { systemObjects: newSystemObjects, highlightedObject: filepath,
+                        highlightedIsDir: isDir } : state);
             });
         } catch (error) {
             alert(error);
@@ -194,19 +175,28 @@ class Navigator extends React.Component {
         this.createNewElement(true);
     }
 
-    uploadFiles = async (files) => {
+    createFormData = async (dir, files) => {
         const uploadForm = new FormData();
-        const dir = Navigator.getPath(this.state.path);
 
         for (const file of files) {
-            uploadForm.append(dir + file.name, file);
+            const filepath = new FilePath(dir, file.name);
+            if (await util.confirmOverwrite(filepath)) {
+                uploadForm.append(filepath.toString(), file);
+            }
         }
+
+        return uploadForm;
+    }
+
+    uploadFiles = async (files) => {
+        const dir = this.state.path;
+        const uploadForm = await this.createFormData(dir, files);
 
         try {
             await util.makeCDIRequest('PUT', 'upload', {}, uploadForm);
             const newSystemObjects = await Navigator.getDirContents(dir);
             this.setState(state => {
-                return (Navigator.getPath(state.path) === dir ? { systemObjects: newSystemObjects} : state);
+                return (state.path.equals(dir) ? { systemObjects: newSystemObjects} : state);
             });
         } catch (error) {
             alert(error);
@@ -214,19 +204,18 @@ class Navigator extends React.Component {
     }
 
     deleteObject = async () => {
-        if (this.state.highlightedObject === null || this.state.highlightedObject === parentLabel) return;
+        if (this.state.highlightedObject === null || this.state.highlightedObject.isPathToParent()) return;
 
-      	const name = this.state.highlightedObject;
-      	const dirPath = Navigator.getPath(this.state.path);
-        const body = JSON.stringify({'Filepath': dirPath + name,
+        const dirPath = this.state.path;
+        const filepath = this.state.highlightedObject;
+        const body = JSON.stringify({'Filepath': filepath.toString(),
                                     'isDirectory': this.state.highlightedIsDir});
-        
         try {
             await util.makeCDIRequest('DELETE', 'delete', {'Content-Type': 'application/json'}, body);
-          	this.props.delete(dirPath + name);
+          	this.props.delete(filepath);
             const newSystemObjects = await Navigator.getDirContents(dirPath);
             this.setState(state => {
-                return (Navigator.getPath(state.path) === dirPath ?
+                return (state.path.equals(dirPath) ?
                         { systemObjects: newSystemObjects, highlightedObject: null, highlightedIsDir: false }
                         : state);
             });
@@ -236,13 +225,12 @@ class Navigator extends React.Component {
     }
 
     createSystemObject = (name, isDir) => {
+        const filepath = new FilePath(this.state.path, name);
         return (
-            <SystemObject key={Navigator.getPath(this.state.path) + name}
-                            label={name}
+            <SystemObject key={filepath.toString()}
+                            filepath={filepath}
                             isDir={isDir}
-                            isPathToParent={name === parentLabel}
-                            isHighlighted={name === this.state.highlightedObject}
-                            parentDir={Navigator.getPath(this.state.path)}
+                            isHighlighted={filepath.equals(this.state.highlightedObject)}
                             doubleClick={this.objectDoubleClicked}
                             highlight={this.highlightObject}
                             renamed={this.objectRenamed}
@@ -253,7 +241,8 @@ class Navigator extends React.Component {
     }
 
     fillViewer = (elements) => {
-        const systemObjects = (this.state.path.length !== 0 ? [this.createSystemObject(parentLabel, true)] : []);
+        const systemObjects = (this.state.path.length() !== 0 ?
+                                [this.createSystemObject(DirPath.parentLabel, true)] : []);
 
         for (const element of elements) {
             systemObjects.push(this.createSystemObject(element['name'], element['isDir']));
@@ -270,7 +259,7 @@ class Navigator extends React.Component {
                 <UploadButton side='left' image='./icons/uploadIcon.png' onClick={this.uploadFiles}/>
                 <EdNavButton side='right' image='./icons/deleteIcon.png' onClick={this.deleteObject}/>
                 <div className="edNavPath">
-                    {Navigator.getPath(this.state.path)}
+                    {this.state.path.toString()}
                 </div>
                 <div className="navWrapper" onClick={this.navWindowClicked}>
                     <div className="navViewer">

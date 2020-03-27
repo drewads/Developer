@@ -17,7 +17,7 @@ class Editor extends React.Component {
         }
 
         try {
-            await util.makeCDIRequest('PUT', `save?Filepath=${this.props.path}`,
+            await util.makeCDIRequest('PUT', `save?Filepath=${this.props.path.toString()}`,
                                         {'Content-Type': this.props.mimeType}, this.editor.getValue());
             this.props.saved();
         } catch (error) {
@@ -62,7 +62,7 @@ class Editor extends React.Component {
             <div className='editor'>
                 <EdNavButton side='right' image='./icons/saveIcon.png' onClick={this.saveFile}/>
                 <div className='edNavPath'>
-                    {this.props.path}<span>{(this.props.unsaved ? ' (unsaved)' : '')}</span>
+                    {this.props.path ? this.props.path.toString() : ''}<span>{(this.props.unsaved ? ' (unsaved)' : '')}</span>
                 </div>
                     
                 <div className='editorWrapper' ref={this.editorWrapper}

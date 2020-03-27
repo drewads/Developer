@@ -1,5 +1,3 @@
-5) Could try to change filepath in editor when ancestor dir name is changed
-	(hold filepath in editor as pathArray?)
 8) Comment and clean up code.
 
 BE DONE.

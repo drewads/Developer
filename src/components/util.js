@@ -44,4 +44,21 @@ const getMediaType = (mimeType) => {
     return (delim === -1 ? mimeType : mimeType.substring(0, delim));
 }
 
-export default { makeCDIRequest, getMediaType };
+const confirmOverwrite = async (destPath) => {
+    // check destPath doesn't already exist
+    try {
+        await makeCDIRequest('GET', `exists?Filepath=${destPath.toString()}`, {}, {});
+        if (window.confirm(`The file ${destPath.toString()} already exists. Would you like to replace it?`)) {
+            return true;
+        } else return false;
+    } catch (error) {
+        if (error === 'filesystem entry does not exist') {
+            return true;
+        } else {
+            alert(error);
+            return false;
+        }
+    }
+}
+
+export default { makeCDIRequest, getMediaType, confirmOverwrite };

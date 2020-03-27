@@ -17,12 +17,12 @@ class SystemObject extends React.Component {
         event.stopPropagation();
 
         if (!this.props.isHighlighted) {
-            this.props.highlight(this.props.label, this.props.isDir);
+            this.props.highlight(this.props.filepath, this.props.isDir);
         }
     }
 
     objectDoubleClicked = () => {
-        this.props.doubleClick(this.props.label, this.props.isDir);
+        this.props.doubleClick(this.props.filepath, this.props.isDir);
     }
 
     setEditable = (isEditable) => {
@@ -30,21 +30,21 @@ class SystemObject extends React.Component {
     }
 
     dragHandler = () => {
-        this.props.dragged(this.props.label);
+        this.props.dragged(this.props.filepath);
     }
 
     dragEnter = (event) => {
         event.preventDefault();
 
         if (this.props.isDir) {
-            this.props.highlight(this.props.label, this.props.isDir);
+            this.props.highlight(this.props.filepath, this.props.isDir);
         }
     }
 
     dragLeave = (event) => {
         event.preventDefault();
 
-        this.props.unhighlight(this.props.label);
+        this.props.unhighlight(this.props.filepath);
     }
 
     dragOver = (event) => {
@@ -55,7 +55,7 @@ class SystemObject extends React.Component {
         event.preventDefault();
 
         if (this.props.isDir) {
-            this.props.dropped(this.props.label);
+            this.props.dropped(this.props.filepath);
         }
     }
 
@@ -66,10 +66,9 @@ class SystemObject extends React.Component {
                 <img src={SystemObject.getIcon(this.props.isDir)} onDoubleClick={this.objectDoubleClicked}
                     draggable={false} onDragEnter={this.dragEnter} onDragLeave={this.dragLeave}
                     onDrop={this.dropHandler} onDragOver={this.dragOver}></img>
-                <SystemObjectLabel label={this.props.label} isHighlighted={this.props.isHighlighted}
+                <SystemObjectLabel filepath={this.props.filepath} isHighlighted={this.props.isHighlighted}
                                     editable={this.state.labelEditable} setEditable={this.setEditable}
-                                    parentDir={this.props.parentDir} renamed={this.props.renamed}
-                                    isPathToParent={this.props.isPathToParent}/>
+                                    renamed={this.props.renamed}/>
             </div>
         );
     }
