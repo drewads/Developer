@@ -11,7 +11,7 @@
     "@babel/preset-react": "^7.9.4",
     "@babel/runtime": "^7.9.2",
     "babel-loader": "^8.1.0",
-    "client-dev-interface": "^1.0.2",
+    "client-dev-interface": "^1.0.3",
     "codemirror": "^5.52.2",
     "express": "^4.17.1",
     "formidable": "^1.2.2",
