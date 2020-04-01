@@ -31,10 +31,10 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "dev-server": "nodemon --exec babel-node server.js --ext js,jsx,mjs,json --ignore dist",
+    "start": "webpack --config webpack.prodConfig.js && node server.js",
+    "dev-server": "nodemon --exec node server.js --ext js,jsx,mjs,json --ignore dist",
     "dev-bundle": "webpack --config webpack.devConfig.js",
-    "prod-bundle": "webpack -p"
+    "prod-bundle": "webpack --config webpack.prodConfig.js"
   },
   "repository": {
     "type": "git",

@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = [
   {
     name: 'client',
-    mode: 'development',
+    mode: 'production',
     entry: path.join(__dirname, 'src/index.jsx'),
     module: {
       rules: [
@@ -19,11 +19,11 @@ module.exports = [
     resolve: {
       extensions: ['*', '.js', '.jsx'],
     },
-    watch: true,
+    watch: false,
   },
   {
     name: 'server-rendered',
-    mode: 'development',
+    mode: 'production',
     entry: path.join(__dirname, 'src/renderedApp.jsx'),
     output: {
       path: path.join(__dirname, 'ssrDist'),
@@ -44,6 +44,6 @@ module.exports = [
     resolve: {
       extensions: ['*', '.js', '.jsx'],
     },
-    watch: true,
+    watch: false,
   },
 ];

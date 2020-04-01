@@ -1,11 +1,12 @@
-import express from 'express';
-import cdi from 'client-dev-interface';
-import http from 'http';
-import path from 'path';
-import renderedApp from './src/renderedApp.jsx';
+const express = require('express');
+const cdi = require('client-dev-interface');
+const http = require('http');
+const path = require('path');
+const renderedApp = require(path.join(__dirname, 'ssrDist/renderedAppBundle.js')).default;
 
 const server = express();
 const PORT = 8080;
+const CDI_ROOT = __dirname;
 
 const devURLRegex = /^\/client-dev-interface/;
 const devSubDomRegex = /^dev\./;
@@ -27,7 +28,7 @@ server.use((req, res, next) => {
 
 server.all(devURLRegex, async (req, res) => {
     try {
-        const success = await cdi.handle(req, __dirname, path.join(__dirname, 'tmp_dir'));
+        const success = await cdi.handle(req, CDI_ROOT, path.join(__dirname, 'tmp_dir'));
         res.status(success.statusCode);
         res.header(success.responseHeaders);
         res.send(success.body);
