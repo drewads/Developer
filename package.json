@@ -13,7 +13,7 @@
     "babel-loader": "^8.1.0",
     "client-dev-interface": "^1.0.3",
     "codemirror": "^5.52.2",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "formidable": "^1.2.2",
     "mime": "^2.4.4",
     "react": "^16.13.1",
